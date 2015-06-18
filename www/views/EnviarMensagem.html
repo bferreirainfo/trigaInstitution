@@ -1,0 +1,154 @@
+<ion-view title="Enviar mensagem" class="noPM" style="transform: translate3d(0em,0em,0em) !important;">
+	<!-- RIGHT BUTTONS -->
+<!-- 	<ion-nav-buttons side="right" >  -->
+<!-- 		<button id="notificationPopover" ng-click="openPopover($event)"  class="notificationPopover button  button-icon button-clear noPM" ng-controller="UnsawNotficiationsPopoverCtrl" > -->
+<!-- 			<span ng-style="{color : unsawNotficiationsSize > 0 ? 'rgba(0, 0, 0, 0.79)' : 'rgba(0, 0, 0, 0.79)'}" class="ion-android-globe" style="font-size: 34px;position: relative;left: -12px;"> -->
+<!-- 				<span ng-if="unsawNotficiationsSize > 0"  class="badge badge-assertive" style="left: 16px;top: -2px;font-size: 12px;position: absolute;">{{unsawNotficiationsSize}}</span> -->
+<!-- 			</span> -->
+<!-- 		</button> -->
+<!-- 	</ion-nav-buttons> -->
+	<!-- SUBHEADER -->
+	<ion-header-bar  id="subHeader1" class="noPM subHeaderAnimationCondition " no-tap-scroll="true" style="height:64px !important;transform: translate3d(0em,0em,0em);" >
+	       <tab-slide-box whenready="{{dto}}" class="noPM"  >
+			    	<div id="tsbIcons" class="tsb-icons backgroundInstitution1"  >
+			    		<div class="tsb-ic-wrp backgroundInstitution1 shadowed" style="height: 64px !important;" >
+							<ion-scroll direction="x" has-bouncing="true" class="tsb-hscroll">
+								<md-button  class="boldCondensed noRadius tabbedItemW " ng-disabled="dto.showResultTab">Quem</md-button>
+								<md-button  class="boldCondensed noRadius tabbedItemW" ng-disabled="!dto.showWhereTab || dto.showResultTab" >Mensagem</md-button>
+								<md-button  class="boldCondensed noRadius tabbedItemW" ng-disabled="!dto.showResultTab">Resultado</md-button>
+							</ion-scroll>
+						</div>
+			    	</div>
+          	</tab-slide-box>	
+	</ion-header-bar>
+	<!-- CONTENT -->
+	<ion-content id="contentAnimation" class="contentAnimation noPM tabsdemoStaticTabs" style="z-index:0;transform: translate3d(0em,0em,0em);" scroll="false" >
+		
+        <ion-slide-box  show-pager="false" on-slide-changed="slideHasChanged($index)" style="background: white;width:100%;" ng-style="{'padding-top' : dto.isUpdated == true }">
+            <ion-slide class="centralized">
+            	<ion-scroll style="height:100%;padding-top:10px;"  has-bouncing="true">
+            	<div style="background: white;text-align: left;overflow: auto;margin-left:20px;padding-bottom: 20px;" class="">
+           			<div style="display: block;border-bottom: 1px solid rgb(52, 127, 127);padding-bottom: 10px;margin-bottom:20px;">
+			        	<label style="font-size: 18px;" class="boldCondensed">Defina para quem deseja enviar </label>
+           			</div>
+            		<div style="width: 100%;">
+            			<div class="row">
+            				<div style="width: 90px;">
+				        		<label style="font-size: 16px;">Filtro</label>
+					    	 </div>
+					    	 <div>
+								 <md-select ng-model="dto.selectedFilter" md-on-open="loadFilters()" style="min-width: 200px;">
+								 	<md-select-label>{{ dto.selectedFilter ? dto.selectedFilter.name : 'Escolha um filtro' }}</md-select-label>
+								 	<md-option ng-value="filter" ng-repeat="filter in dto.filters">{{filter.name}}</md-option>
+							   	 </md-select>
+					    	 </div>
+            			</div>
+				        <div ng-if="dto.selectedFilter.value == 2" style="padding-top: 20px;">
+							<div class="row" >
+			        			<div style="width: 90px;">
+				        			<label style="font-size: 16px;">Professor</label>
+			        			</div>
+			        			<div>
+									 <md-select ng-model="dto.selectedTeacher" md-on-open="loadTeachers()" style="min-width: 200px;">
+									      <md-select-label>{{ dto.selectedTeacher ? dto.selectedTeacher.name : 'Escolha um professor' }}</md-select-label>
+									      <md-option ng-value="teacher" ng-repeat="teacher in dto.teachers">{{teacher.name}}</md-option>
+								   	 </md-select>
+			        			</div>
+							</div>			        
+							<div ng-if="dto.selectedTeacher != null" style="padding-top: 20px;">
+								<div style="display: block;border-bottom: 1px solid rgb(52, 127, 127);padding-bottom: 10px;margin-bottom:20px;">
+			        				<label style="font-size: 18px;" class="boldCondensed">Selecione as turmas</label>
+           						</div>
+            					<div>
+									<md-checkbox class="noPM" style="padding-left:20px !important;max-width: 300px;width:100%; font-size: 16px;" ng-repeat="item in dto.classes" ng-checked="exists(item.id, dto.selectedClasses)" ng-click="toggle(item.id, dto.selectedClasses)">
+							        	{{ item.nome }} 
+							        </md-checkbox>
+            					</div>
+							 </div>
+				        </div>
+				        <div ng-if="dto.selectedFilter.value == 3" style="padding-top: 20px;">
+				        	<div style="display: block;border-bottom: 1px solid rgb(52, 127, 127);padding-bottom: 10px;margin-bottom:20px;">
+			        			<label style="font-size: 18px;" class="boldCondensed">Selecione os alunos</label>
+           					</div>
+					        <div>
+							   <md-checkbox class="noPM" style="padding-left:20px !important;max-width: 300px;width:100%; font-size: 16px;" ng-repeat="item in dto.students" ng-checked="exists(item.id, dto.selectedStudents)" ng-click="toggle(item.id, dto.selectedStudents)">
+							        	{{ item.nome }} 
+							   </md-checkbox>
+							 </div>
+				        </div>
+				        
+				        <div ng-if="dto.selectedFilter.value == 4" style="padding-top: 20px;">
+				        	<div style="display: block;border-bottom: 1px solid rgb(52, 127, 127);padding-bottom: 10px;margin-bottom:20px;">
+			        			<label style="font-size: 18px;" class="boldCondensed">Selecione os cursos</label>
+           					</div>
+					        <div>
+							   <md-checkbox class="noPM" style="padding-left:20px !important;max-width: 300px;width:100%; font-size: 16px;" ng-repeat="item in dto.courses" ng-checked="exists(item.id, dto.selectedCourses)" ng-click="toggle(item.id, dto.selectedCourses)">
+							        	{{ item.name }} 
+							   </md-checkbox>
+							 </div>
+				        </div>
+				        <div style="padding-top: 20px;">
+							<md-button class="md-raised centralized" ng-disabled="!dto.showWhereTab" ng-click="slide(1)">Próximo passo</md-button>
+				        </div>
+            		</div>
+			  	</div>
+			  	</ion-scroll>
+            </ion-slide>
+            <ion-slide ng-if="dto.showWhereTab" class="centralized">
+            	<ion-scroll style="height:100%;"  has-bouncing="true" >
+            	<div style="background: white;text-align: left;padding-bottom: 20px;" class="">
+            		<div style="float: left;width: 100%;">
+								<md-content class="card noPM" layout-padding layout="row" layout-sm="column">
+								    <md-input-container class="padding">
+								      <label style="font-size: 18px;width: 300px;">Título</label>
+								      <input ng-model="dto.title">
+								    </md-input-container>
+							    </md-content>
+								<md-content class="card noPM">
+								    <md-input-container class="padding">
+								        <label style="font-size: 18px;">Mensagem</label>
+       									<textarea ng-model="dto.message" columns="1" md-maxlength="150"></textarea>
+								    </md-input-container>
+							    </md-content>
+							    <md-content class="card noPM" flex>
+							    	<div style="display: block;border-bottom: 1px solid rgb(52, 127, 127);padding-bottom: 10px;padding-top: 10px;margin-bottom:20px;margin-left:10px;">
+							        	<label style="font-size: 18px;" class="boldCondensed">Defina a plataforma de envio</label>
+				           			</div>
+								    <md-checkbox ng-model="dto.pushNotification" >
+										 Notificação no celular
+									</md-checkbox>
+							    	<md-checkbox  disabled>
+										 Email [EM BREVE}]
+									</md-checkbox>
+								    <md-checkbox  disabled>
+								    	  SMS [EM BREVE}]
+								    </md-checkbox>
+				        		</<md-content>
+            		</div>
+				        <div style="padding-top: 20px;padding-left:10px">
+							<md-button class="md-raised centralized" ng-disabled="!dto.canSend" ng-click="sendMessage();">Enviar mensagem</md-button>
+				        </div>
+			  	</div>
+			  	</ion-scroll>
+            </ion-slide>
+            <ion-slide ng-if="dto.showResultTab" style="height:100%;" ng-if="dto.showWhereTab" class="centralized">
+            	<ion-scroll style="text-align: left;"  has-bouncing="true" >
+            		<div style="float: left;width: 100%;">
+				        <div style="padding-top: 20px;padding-left:10px">
+				        	<div style="margin-top: 10%;margin-bottom: 20%;text-align: center;">
+								<div class="ion-ios-compose-outline" style="font-size: 100px;"></div>
+								<label>Mensagem enviada com sucesso!</label>
+								<div>
+									<label>Dentro de alguns minutos as mensagens serão entregues.</label>
+								</div>
+								<br/>
+								<md-button class="md-raised centralized" ng-disabled="!dto.canSend" ng-click="clear();">Nova Mensagem</md-button>
+							 </div>
+				        </div>
+            		</div>
+			  	</ion-scroll>
+            </ion-slide>
+        </ion-slide-box>
+	</ion-content>
+	
+</ion-view>

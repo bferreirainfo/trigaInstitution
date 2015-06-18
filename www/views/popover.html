@@ -1,0 +1,27 @@
+<div style="left:-10px;right:0;bottom:0;position:absolute;z-index: 9999999;width: 300px;height:500px;" ng-style="{top : dto.top}" >
+	<ion-popover-view style="width:100%;background: #f1f1f1;height:80%;" >
+		<ion-content has-bouncing="true" class="padding" >
+			<h2 style="text-align: center;" >Notificações</h2>
+			<div ng-if="unsawNotficiations == ''" style="margin-top: 20%;margin-bottom: 20%;text-align: center;">
+				<div class="ion-android-globe" style="font-size: 100px;"></div>
+				<div style="font-size: 20px;">Nenhuma notificação!</div>
+			</div>
+	  		<div style="position:reltive;" ng-repeat="notification in unsawNotficiations">
+  					<div class="card">
+		 			 <div class="item item-text-wrap">
+						<h2>{{notification.title}}</h2>
+		    			{{notification.message}}
+		  				<p>Recebido em: {{notification.date}}</p>
+		 			</div>
+				</div>
+	  	 	</div>
+	  	 	<div style="  position: absolute;  top: 85%;  width: 100%;margin:auto;">
+	  	 		<md-button ng-click="closePopover();" menu-close href="#/menu/notifications" class="md-raised button-block" style="background: #FABD10;height:50px;vertical-align:middle">
+	  	 			<span style="position: relative;  top: 10px;">
+		  	 			Ler anteriores
+	  	 			</span>
+	  	 		</md-button>
+	  	 	</div>
+     	</ion-content>
+   </ion-popover-view>
+</div>
