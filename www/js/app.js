@@ -92,7 +92,7 @@ trigaApp.config(function($ionicConfigProvider) {
 });
 var isProd;
 trigaApp.run(function($ionicSideMenuDelegate,PushNotificationService, $location,$timeout,$rootScope) {
-	isProd = false;
+	isProd = true;
 	FastClick.attach(document.body);
 	ionic.Platform.ready(function(){
 //		document.body.style.height = screen.availHeight + 'px';

@@ -97,7 +97,7 @@
             <ion-slide ng-if="dto.showWhereTab" class="centralized">
             	<ion-scroll style="height:100%;"  has-bouncing="true" >
             	<div style="background: white;text-align: left;padding-bottom: 20px;" class="">
-            		<div style="float: left;width: 100%;">
+            		<div style="width: 100%;">
 								<md-content class="card noPM" layout-padding layout="row" layout-sm="column">
 								    <md-input-container class="padding">
 								      <label style="font-size: 18px;width: 300px;">Título</label>
@@ -125,9 +125,9 @@
 								    </md-checkbox>
 				        		</<md-content>
             		</div>
-				        <div style="padding-top: 20px;padding-left:10px">
-							<md-button class="md-raised centralized" ng-disabled="!dto.canSend" ng-click="sendMessage();">Enviar mensagem</md-button>
-				        </div>
+			        <div style="padding-top: 20px;padding-left:10px">
+						<md-button class="md-raised centralized" ng-disabled="!dto.canSend" ng-click="sendMessage($event);">Enviar mensagem</md-button>
+			        </div>
 			  	</div>
 			  	</ion-scroll>
             </ion-slide>

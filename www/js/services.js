@@ -48,8 +48,8 @@ trigaApp.service('SendMessageService', function($q,$resource) {
 	    								   			  
 	    								   } 
     								   );
-    		fecthData(q,regResource, 'post',"sendMessage",null, null, data);
     		var q = $q.defer();
+    		fecthData(q,regResource, 'post',null, null, data);
             return q.promise;
         }	
     }
@@ -66,7 +66,7 @@ trigaApp.service('InformationService', function($q,$resource) {
 					} 
 			);
 			var q = $q.defer();
-			fecthData(q,regResource, 'get',"getAllProfessors");
+			fecthData(q,regResource, 'get');
 			return q.promise;
 		},	
 		getAllClassesByProfessorId: function(professorId) {
@@ -78,7 +78,7 @@ trigaApp.service('InformationService', function($q,$resource) {
 					} 
 			);
 			var q = $q.defer();
-			fecthData(q,regResource, 'get',"getAllClassesByProfessorId");
+			fecthData(q,regResource, 'get');
 			return q.promise;
 		},
 		getAllStudents: function() {
@@ -90,7 +90,7 @@ trigaApp.service('InformationService', function($q,$resource) {
 					} 
 			);
 			var q = $q.defer();
-			fecthData(q,regResource, 'get',"getAllStudents");
+			fecthData(q,regResource, 'get');
 			return q.promise;
 		},
 		getAllCourses: function() {
@@ -102,7 +102,7 @@ trigaApp.service('InformationService', function($q,$resource) {
 					} 
 			);
 			var q = $q.defer();
-			fecthData(q,regResource, 'get',"getAllCourses");
+			fecthData(q,regResource, 'get');
 			return q.promise;
 		}	
 	}
@@ -146,7 +146,7 @@ trigaApp.service('UserPerfilService', function($q,$resource) {
 		getPerfil: function(studentId) {
 			var resource = $resource(apiUrl+':action?studentId='+studentId+'&instituicao=alquimia',{ action: "perfil"}, { 'get':  {method: 'GET'} });
 			var q = $q.defer();
-			fecthData(q,resource, 'get',"perfil");
+			fecthData(q,resource, 'get');
 			return q.promise;
 		}
 	
@@ -158,7 +158,7 @@ trigaApp.service('LoginService', function($q,$resource) {
 		login: function(username, password,institutionName) {
 			var resource = $resource(apiUrl+':action?username=:username&password=:password&institution=:institution',{ action: "login", username: username, password : password, institution: institutionName }, { get:  {method: 'GET'} });
 			var q = $q.defer();
-			fecthData(q,resource, 'get',"login");
+			fecthData(q,resource, 'get');
 			return q.promise;
 		},
 	}
@@ -189,14 +189,16 @@ function fecthData(qDefered,resource,methodName,storageKey, tries,data){
 		var isFirstTime = tries == null;
 		isFirstTime ? tries = 1 : tries++;
 		//this method above tries to fetch the data based on the resource and methodName
+		console.log("data",data)
 		resource[methodName](data,function(resp) {
 	    	removePromiseProperties(resp);
 	    	console.log("RESPONSE " + JSON.stringify(resp));
 	    	if(resp.status != null){
-	    		var response = {data : resp.data ,lastUpdateDate : new Date()};
-	    		if(storageKey)
-	    			window.localStorage.setItem(storageKey, JSON.stringify(response));
-	    		qDefered.resolve(response);
+	    		if(storageKey){
+	    			resp.lastUpdateDate = new Date();
+	    			window.localStorage.setItem(storageKey, JSON.stringify(resp));
+	    		}
+	    		qDefered.resolve(resp);
 	    	}else if(tries == 3){
 	    			var err = {cache : null, status: null, errorMessage: null};
 	    			if(storageKey)
@@ -205,12 +207,12 @@ function fecthData(qDefered,resource,methodName,storageKey, tries,data){
 	    			err.errorMessage = {title: "Não foi possível conectar" , description: "Verifique sua conexão e tente novamente.", lastU0pdateDate: err.cache ? err.cache.lastUpdateDate : "nunca atualizado"};
 	    			qDefered.reject(err);
     		}else{
-    			fecthData(qDefered,resource,methodName,storageKey,tries);
+    			fecthData(qDefered,resource,methodName,storageKey,tries,data);
     		}
 	    }, function(err) {
 	    	var isTimeOutError = err.status == 0 && err.data == null;
 	    	if(isTimeOutError){
-	    		console.log("THE TRIES THO,THE TRIES..." + tries)
+	    		console.log("Tentativas" + tries)
 	    		if(tries == 3){
 	    			if(storageKey)
 	    			err.cache = JSON.parse(window.localStorage.getItem(storageKey));
@@ -218,7 +220,7 @@ function fecthData(qDefered,resource,methodName,storageKey, tries,data){
 	    			err.errorMessage = {title: "Demora na resposta" , description: "Tente novamente mais tarde.", lastUpdateDate: err.cache ? err.cache.lastUpdateDate : "nunca atualizado"};
 	    			qDefered.reject(err);
 	    		}else{
-	    			fecthData(qDefered,resource,methodName,storageKey,tries);
+	    			fecthData(qDefered,resource,methodName,storageKey,tries,data);
 	    		}
 	    	}
 	    })

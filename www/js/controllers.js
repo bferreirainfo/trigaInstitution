@@ -1,67 +1,6 @@
 'use strict';
 
-trigaApp.controller('NotasCtrl', function($rootScope,$scope, NotasService, $ionicLoading, $timeout) {
-	var firstime = true;
-	function fetch(isPushToFrefresh){
-		 if(!isPushToFrefresh){
-			$("#contentAnimation1").hide();
-			 if(firstime){
-				$("#subHeader").addClass("subHeaderAnimationCondition");
-				$("#contentAnimation1").addClass("contentAnimation1");
-			 }
-			 $timeout(function(){
-				 $ionicLoading.show()
-			 },100)
-		 }
-		 var studentId = JSON.parse(window.localStorage.getItem("studentPerfil")).id;
-		 NotasService.TodasNotas(studentId).then(
-					function success(resp) {
-						$(".slideUp1:eq(0)").hide();
-						var response = { grades : resp, isUpdate : true , lastUpdateDate : new Date()};
-						window.localStorage.setItem("grades", JSON.stringify(response));
-						$timeout(function(){
-							$scope.$broadcast('scroll.refreshComplete');
-							$ionicLoading.hide();
-						},550)
-						$timeout(function(){
-							
-							$scope.dto = response;
-							
-						},560)
-						$timeout(function(){
-							 $(".slideUp1:eq(0)").fadeIn(1000);
-							$("#subHeader").animate({
-						            'top': '64px',
-						            }, {duration: 'slow', queue: false}).fadeIn(1700);
-							if(isPushToFrefresh || !firstime){
-								 $("#contentAnimation1").show();
-							}else{
-								$("#contentAnimation1").animate({
-									'top': '41px',
-								}, {duration: 'slow', queue: false}).fadeIn(1000);
-								$("#contentAnimation1").removeClass("contentAnimation1");
-								firstime = false;
-							}
-						    $("#subHeader").removeClass("subHeaderAnimationCondition");
-							
-						 },580)
-				},  function error(resp){
-						console.log("fecthing GRADES error response", resp)
-						console.log("error retrive grades: "+ JSON.stringify(resp));
-						$ionicLoading.hide();
-						$scope.$broadcast('scroll.refreshComplete');
-				});
-	}
-	$scope.$on( "$ionicView.beforeEnter", function( scopes, states ) {
-		if(states.stateName == "menu.notas"){
-			$rootScope.sideMenuController.canDragContent(false);
-//			$('.appHeader').removeClass("shadowed");
-			fetch();
-        }
-	});
-	$scope.fetch = fetch;
-})
-trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$scope,InformationService, SendMessageService,  $ionicLoading,$timeout, $ionicSlideBoxDelegate) {
+trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialog, $scope,InformationService, SendMessageService,  $ionicLoading,$timeout, $ionicSlideBoxDelegate) {
 //	ionic.Platform.showStatusBar(true);
 	var firstime = true;
 	$scope.selectedProfessor = null;
@@ -76,10 +15,15 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$scope,Informatio
 	$scope.loadTeachers = function() {
 		return InformationService.getAllProfessors().then(
 				function success(resp) {
-					$scope.dto.teachers = resp;
-				},function success(resp) {
+					$scope.dto.teachers = resp.data;
+				},function error(resp) {
+					$mdToast.show(
+						      $mdToast.simple()
+						        .content(resp.errorMessage.title + "  " + resp.errorMessage.description)
+						        .position("bottom right")
+						        .hideDelay(1000)
+						    );
 				});
-		 
 	}
 	
 	$scope.loadFilters = function() {
@@ -97,7 +41,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$scope,Informatio
         return list.indexOf(item) > -1;
     };
     
-    $scope.sendMessage = function () {
+    $scope.sendMessage = function (ev) {
     	var data = {institutionName : JSON.parse(window.localStorage.getItem("appConfig")).instituionName, 
     				filter: $scope.dto.selectedFilter.value, 
     				classesIds: $scope.dto.selectedClasses, 
@@ -106,16 +50,39 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$scope,Informatio
     				channels: $scope.dto.channels,
     				title: $scope.dto.title,
     				message: $scope.dto.message};
-    	console.log($scope.dto.selectedStudents)
+    	$mdDialog.show(
+			      $mdDialog.alert()
+			        .title('Enviando mensagem.')
+			        .content('Aguarde um momento...')
+			        .targetEvent(ev)
+			    );
     	SendMessageService.send(data).then(
 				function success(resp) {
-					$scope.dto.showResultTab = true;
-					$scope.events.trigger("render", 2);
-					$ionicSlideBoxDelegate.enableSlide(false);
+					$mdDialog.hide();
+					console.log("send msg: ",resp);
+					 $timeout(function(){
+						if(resp.status == 'SUCCESSS'){
+							$scope.dto.showResultTab = true;
+							$scope.events.trigger("render", 2);
+							$ionicSlideBoxDelegate.enableSlide(false);
+						}else{
+							 $mdToast.show(
+								      $mdToast.simple()
+								        .content(resp.errorMessage)
+								        .position("bottom right")
+								        .hideDelay(1000)
+								    );
+						}
+					 },500);
+					
 				},  function error(resp){
-					 console.log("error retrive scheduleGrid: "+ JSON.stringify(resp));
-					 $ionicLoading.hide();
-					 $scope.$broadcast('scroll.refreshComplete');
+					$mdDialog.hide();
+					 $mdToast.show(
+						      $mdToast.simple()
+						        .content(resp.errorMessage.title + "  " + resp.errorMessage.description)
+						        .position("bottom right")
+						        .hideDelay(1000)
+						    );
 			})
     	
     };
@@ -191,8 +158,14 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$scope,Informatio
 										 }
 										InformationService.getAllStudents().then(
 												function success(resp) {
-													$scope.dto.students = resp;
-												},function success(resp) {
+													$scope.dto.students = resp.data;
+												},function error(resp) {
+													$mdToast.show(
+														      $mdToast.simple()
+														        .content(resp.errorMessage.title + "  " + resp.errorMessage.description)
+														        .position("bottom right")
+														        .hideDelay(1000)
+														    );
 												});
 										break;
 									case 4:
@@ -204,8 +177,14 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$scope,Informatio
 										 }
 										InformationService.getAllCourses().then(
 												function success(resp) {
-													$scope.dto.courses = resp;
-												},function success(resp) {
+													$scope.dto.courses = resp.data;
+												},function error(resp) {
+													$mdToast.show(
+														      $mdToast.simple()
+														        .content(resp.errorMessage.title + "  " + resp.errorMessage.description)
+														        .position("bottom right")
+														        .hideDelay(1000)
+														    );
 												});
 										break;
 		
@@ -220,9 +199,14 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$scope,Informatio
 							 if($scope.dto.selectedTeacher){
 								 $scope.dto.selectedClasses = [];
 								 InformationService.getAllClassesByProfessorId($scope.dto.selectedTeacher.id).then(function sucess(resp){
-									 $scope.dto.classes = resp;
+									 $scope.dto.classes = resp.data;
 								 }, function error(resp){
-									 
+									 $mdToast.show(
+										      $mdToast.simple()
+										        .content(resp.errorMessage.title + "  " + resp.errorMessage.description)
+										        .position("bottom right")
+										        .hideDelay(1000)
+										    );
 								 });
 							 }
 						 });
@@ -458,9 +442,7 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $mdDialog, 
 		var targetPath = fileDir + fileName;
 		$scope.institutionIcon = targetPath;
 		if( states.stateName == "menu.notifications" ) {
-			
 			$rootScope.sideMenuController.canDragContent(true);
-//			$('.appHeader').addClass("shadowed");
 			window.localStorage.removeItem("unsawNotficiations");
 			$timeout(function(){
 			var storedNotifications = JSON.parse(window.localStorage.getItem("storedNotifications"));
