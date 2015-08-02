@@ -392,6 +392,15 @@ md-divider.md-default-theme {
 .itemMenu >.icon{
 	color: white !important;
 }
+.TrigaChips{
+	background: rgb(224,224,224); 
+	border-radius: 16px; 
+	height: 32px;
+	line-height: 32px; 
+	margin: 8px 8px 0 0px; 
+	padding: 0 8px 0 0px;
+	float: left;
+}
 .spinner-android{
   stroke: rgb(255, 195, 8) !important;
   padding:10px 10px 2px 10px;
@@ -610,4 +619,16 @@ md-input-container.md-default-theme:not(.md-input-invalid).md-input-has-value la
 
 .upperCaseFirstLetter:first-letter {
     text-transform: uppercase;
+}
+.activeLabel{
+	font-size: 18px;
+	color: rgba(0,0,0,0.54);
+	transform: translate3d(0, 6px, 0) scale(0.75);
+	-webkit-font-smoothing: antialiased;
+	padding-left: 2px;
+	transition: transform cubic-bezier(0.25, 0.8, 0.25, 1) 0.25s;
+	position: relative;  
+	top: -2px;font-weight: 400;    
+	line-height: 1.42857;    
+	left: -49px;	
 }
