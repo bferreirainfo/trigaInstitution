@@ -499,9 +499,115 @@ md-divider.md-default-theme {
 	top:8px !important;
 }
 
+/* ionic */
+.platform-android {
+    padding-top: 25px;
+    /*StatusBar color*/
+    background-color: rgb(8, 89, 89);
+}
+.platform-ios{
+    padding-top: 25px;
+    /*StatusBar color*/
+    background-color: rgb(8, 89, 89);
+}
+.scroll-content{
+	padding-top: 0px !important; 
+}
+
+/* ANGULAR MATERIAL */
+.md-subheader:not(.md-sticky-no-effect):after{
+	right:0 !important;
+}
+.md-subheader:not(.md-sticky-no-effect)[sticky-state="active"]{
+	box-shadow: 0px 0px 1px 1px rgba(0, 0, 0, 0.14), 0px 0px 2px 2px rgba(0, 0, 0, 0.098), 0px 0px 5px 1px rgba(0, 0, 0, 0.084);
+}
+.md-list-item-text{
+	padding: 10px 0 !important;
+}
+.noPM .md-subheader-inner {
+  padding: 0px 0px 0px 16px !important;
+}
+.md-subheader{
+	margin: 0px !important;
+}
+md-divider{
+	border-top-style: ridge !important;
+}
+
+md-list-item md-divider[md-inset] {
+  left: 72px !important;
+  width: calc(100% - 72px) !important;
+  margin: 0;
+}
+md-list{
+	padding: 8px 0px 0px 0px !important;
+}
 .md-select-label{
 	padding-top: 0px !important;
 }
 .md-subheader:not(.md-sticky-no-effect):after{
 	right:0 !important;
+}
+
+.chipsdemoContactChips .md-item-text.compact {
+  padding-top: 8px;
+  padding-bottom: 8px; }
+.chipsdemoContactChips .contact-item {
+  box-sizing: border-box; }
+  .chipsdemoContactChips .contact-item.selected {
+    opacity: 0.5; }
+    .chipsdemoContactChips .contact-item.selected h3 {
+      opacity: 0.5; }
+  .chipsdemoContactChips .contact-item .md-list-item-text {
+    padding: 14px 0; }
+    .chipsdemoContactChips .contact-item .md-list-item-text h3 {
+      margin: 0 !important;
+      padding: 0;
+      line-height: 1.2em !important; }
+    .chipsdemoContactChips .contact-item .md-list-item-text h3, .chipsdemoContactChips .contact-item .md-list-item-text p {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden; }
+  @media (min-width: 350px) and (max-width: 899px){
+    .chipsdemoContactChips .contact-item {
+      float: left;
+      width: 100%; } }
+  @media (min-width: 900px) {
+    .chipsdemoContactChips .contact-item {
+      float: left;
+      width: 33%; } }
+  
+.chipsdemoContactChips md-contact-chips {
+  margin-bottom: 0px; }
+.chipsdemoContactChips .md-chips {
+  padding: 5px 0 8px; }
+.chipsdemoContactChips .fixedRows {
+  overflow: hidden; }
+  
+/*.md-contact-chips .md-chips .md-chip{
+	margin-left: 10px;
+}*/
+.md-chips .md-chip-input-container:not(:first-child){
+	width: 0px;
+}
+md-list.md-default-theme md-list-item button.md-button:not([disabled]):hover{
+	background-color: rgba(220, 220, 220, 0.38);
+	border-radius: 0px !important;
+}
+
+.selected button{
+	background-color: gainsboro !important;
+	border-radius: 0px !important;
+}
+.ellipsis{
+	text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+md-input-container.md-default-theme:not(.md-input-invalid).md-input-has-value label{
+}
+
+.upperCaseFirstLetter:first-letter {
+    text-transform: uppercase;
 }

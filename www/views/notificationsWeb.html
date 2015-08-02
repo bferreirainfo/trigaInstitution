@@ -1,0 +1,186 @@
+<ion-view title="Monitorar notificações">
+	<ion-header-bar  id="subHeader1" class="noPM subHeaderAnimationCondition " no-tap-scroll="true" style="height:64px !important;transform: translate3d(0em,0em,0em);" >
+	</ion-header-bar>
+  <ion-content style="top: 64px;" class="noPM">
+		<ion-scroll style="width: 40%;float:left;height: 100%;">
+			<md-toolbar style="background: #EEEEEE;" class="shadowed">
+			    <div class="md-toolbar-tools">
+			      <h3>
+			        <span>Filtros</span>
+			      </h3>
+			    </div>
+			  </md-toolbar>
+			<md-content class="chipsdemoContactChips" style="box-shadow: 0 1px rgb(224,224,224);">
+	  			<div class="row noPM" style="box-shadow: 0 1px rgb(224,224,224);height: 74px;">
+	  				<div style="padding-top: 10px;margin-right: 10px;">
+						<h3 class="md-title" style="margin-bottom:0px;padding-left:10px;padding-top:10px;">Período:</h3>
+	  				</div>
+	  				<div style="width: 140px;">
+						 <md-input-container>
+				          <label style="font-size: 20px">Data inicial</label>
+				          <input type="date" style="padding:0px;padding-bottom: 5px;" ng-model="initialDate">
+				        </md-input-container>
+	  				</div>
+	  				<div style="width: 140px;">
+						 <md-input-container>
+				          <label style="font-size: 20px">Data Final</label>
+				          <input type="date" style="padding:0px;padding-bottom: 5px;" ng-model="endDate">
+				        </md-input-container>
+	  				</div>
+	  			</div>
+	  			<div class="row noPM" style="width: 100%;box-shadow: 0 1px rgb(224,224,224);">
+	  				<div style="padding-top: 10px;margin-right: 10px;width: 70px">
+						<h3 class="md-title" style="margin-bottom:0px;padding-left:10px;padding-top:10px;">Perfil:</h3>
+					</div>
+					<div style="width: 100%;">
+						<div class="row" style="width: 100%;">
+							<div style="width: 100%;height: 74px;">
+							    <md-contact-chips
+							        ng-model="contacts"
+							        md-contacts="querySearch($query)"
+							        md-contact-name="name"
+							        md-contact-image="image"
+							        md-require-match
+							        filter-selected="filterSelected"
+							        placeholder="TODOS">
+							    </md-contact-chips>
+						    </div>
+						</div>
+						<div class="row noPM">
+						    <md-list class="fixedRows" style="width: 100%;">
+						      <md-subheader class="md-no-sticky">Selecione um perfil para filtar</md-subheader>
+						      <md-list-item class="md-2-line contact-item" ng-repeat="(index, contact) in allContacts"
+						          ng-class="{'selected': !(contacts.indexOf(contact) < 0)}" ng-click="add(contact)" >
+						        <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+						        <div class="md-list-item-text compact">
+						          <h3>{{contact.name}}</h3>
+						          <p>{{contact.email}}</p>
+						        </div>
+						      </md-list-item>
+						    </md-list>
+					    </div>
+				    </div>
+			    </div>
+			    <div class="row noPM">
+			    	<div style="padding-top: 14px;margin-right: 10px;width: 70px">
+			    		<h3 class="md-title" style="margin-bottom:0px;padding-left:10px;">Nome:</h3>
+			    	</div>
+			    	<md-contact-chips
+				        ng-model="namesFilter"
+				        md-contacts="searchNotifications($query)"
+				        md-contact-name="autor"
+				        md-contact-image="image"
+				        md-contact-email="email"
+				        md-require-match
+				        filter-selected="filterSelected"
+				        placeholder="Digite um nome para filtrar">
+			    	</md-contact-chips>
+		    	</div>
+			  </md-content>
+		</ion-scroll>
+		<ion-scroll style="width: 35%;float:left;height: 100%;border-left: 1px solid rgba(0,0,0,.08);">
+			<md-toolbar style="background: #EEEEEE;" class="shadowed">
+			    <div class="md-toolbar-tools">
+			      <h3>
+			        <span>Notifcações</span>
+			      </h3>
+			    </div>
+			  </md-toolbar>
+		  	<div  style="padding:0px 0px;" layout="column" flex layout-fill>
+		    	<div ng-if="filtereNotifications.length == 0" style="margin-top: 10%;margin-bottom: 20%;text-align: center;">
+					<div class="ion-android-globe" style="font-size: 100px;"></div>
+					<div style="font-size: 24px;">Nenhuma notificação!</div>
+				</div>
+		        <md-list class="noPM">
+		        	<md-list-item ng-class="{ 'selected' : notification == detailNotification}" class="md-3-line noPM" ng-model="filtereNotifications" style="height:75px;" ng-repeat="notification in filtereNotifications track by $index" ng-click="setDetailNotification(notification)">
+			            <img ng-if="notification.notificaitonType == 'TRIGA'"  class="md-avatar"  ng-src="img/triga3.jpg"></img>
+	           			<img ng-if="notification.notificaitonType == 'INSTITUTION'" class="md-avatar"  ng-src="{{institutionIcon}}"></img>
+	           			<div ng-if="notification.notificaitonType == 'GRADE_NOTIFICATION'" class="md-avatar">
+	           				<i class="icon ion-university" style="font-size:30px;position: relative;top: 0px;left: 10px;"></i>
+	           			</div>
+			            <div class="md-list-item-text compact" style="">
+			              <h3 class="row noPM" style="width: 100%;" >
+	                          <div class="upperCaseFirstLetter" style="width: 85%;line-height: initial;">
+	                          			{{notification.autor}}
+	                          </div>
+	                          <div class="boldCondensed" style="line-height: initial;width: 100px;text-align: right;">{{formatDate(notification.date)}}</div>
+                          </h3>
+                           <h3 class="row noPM upperCaseFirstLetter" style="width: 100%;line-height: initial;" >
+                           			{{notification.title}}
+                       	   </h3>
+				          <p class="upperCaseFirstLetter ellipsis" style="line-height: initial;margin: 0px;color: rgba(0, 0, 0, 0.65);">{{notification.message}}</p>
+				        <md-divider class="noPM"></md-divider>
+				        </div>
+			      	</md-list-item>
+			      </md-list>
+		      	</div>
+		 </ion-scroll>
+		 <ion-scroll style="width: 25%;float:left;height: 100%;border-left: 1px solid rgba(0,0,0,.08);">
+		 	<md-toolbar style="background: #EEEEEE" class="shadowed">
+			    <div class="md-toolbar-tools">
+			      <h3>
+			        <span>Detalhamento da notificação</span>
+			      </h3>
+			    </div>
+			  </md-toolbar>
+		 	<div ng-if="detailNotification == undefined" style="background: #F7F7F7;height:100%;">
+		 		<div style="padding-top: 50%;margin-bottom: 20%;text-align: center;">
+					<div class="ion-android-globe" style="font-size: 140px;"></div>
+					<div style="font-size: 14px;">Clique em uma notificação ao lado para detalhar. </div>
+		 		</div>
+			</div>
+			<div ng-if="detailNotification != undefined">
+				<md-content md-theme="docs-dark" style="height: 75px;" layout-padding layout="row" layout-sm="column">
+				    <md-input-container>
+				      <label style="font-size: 18px">Autor</label>
+				      <input style="color:white;" class="upperCaseFirstLetter"disabled="true" ng-model="detailNotification.autor">
+				    </md-input-container>
+				    <md-input-container>
+				      <label style="font-size: 18px">Perfil</label>
+				      <input style="color:white;" class="upperCaseFirstLetter" ng-model="detailNotification.perfil" disabled="true">
+				    </md-input-container>
+				</md-content>
+				<md-input-container style="height: 75px;padding: 0 10px">
+			        <label style="font-size: 18px">Título</label>
+			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.title" columns="1" md-maxlength="150" disabled="true"></input>
+		      	</md-input-container>
+				<md-input-container style="padding: 0 10px">
+			        <label style="font-size: 18px;">Mensagem</label>
+			        <textarea /style="color:black;" ng-model="detailNotification.message" columns="1" md-maxlength="150" disabled="true"></textarea>
+		      	</md-input-container>
+		      	<md-toolbar style="background: #EEEEEE" class="shadowed">
+				    <div class="md-toolbar-tools">
+				      <h3>
+				        <span>Filtros utilizados</span>
+				      </h3>
+				    </div>
+			  	</md-toolbar>
+				<md-input-container style="padding: 10px 10px 0px 10px">
+			        <label style="font-size: 18px;">Filtros</label>
+			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.filter.filterName" disabled="true"></input>
+		      	</md-input-container>
+				<md-input-container style="padding: 10px 10px 0px 10px">
+			        <label style="font-size: 18px;">Filtros</label>
+			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.filter.filterName" disabled="true"></input>
+		      	</md-input-container>
+				<md-input-container style="padding: 0 10px">
+			        <label style="font-size: 18px;">Total de dispositivos impactados</label>
+			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.messageAnalitics.totalTargets" disabled="true"></input>
+		      	</md-input-container>
+		      	<div>
+		      	<div style="background: rgb(224,224,224); border-radius: 16px; height: 32px;line-height: 32px; margin: 8px 8px 0 5px;
+				    padding: 0 8px 0 0px;
+				    float: left;
+				">
+		      		<div style="float:left;"> 
+						<img  style="height: 32px;border-radius: 16px;-webkit-user-drag: none;" ng-src="img/triga3.jpg" alt="Coordenador" src="img/triga3.jpg">
+					</div>
+					 <div style="float:left; margin: 0px 8px;">Coordenador</div>
+	      		</div>
+		      			
+		      	</div>
+			</div>
+			
+		 </ion-scroll>
+  </ion-content>
+</ion-view>

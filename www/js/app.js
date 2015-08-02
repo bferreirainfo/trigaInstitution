@@ -3,6 +3,7 @@
 var trigaApp = angular.module('trigaApp', ['ionic','ngResource','ngMaterial','tabSlideBox']);
 trigaApp.config(function($mdThemingProvider) {
 	$mdThemingProvider.theme('default').primaryPalette("orange").accentPalette("green");
+	 $mdThemingProvider.theme('docs-dark').primaryPalette('orange').dark();
 });
 
 trigaApp.config(function($stateProvider, $urlRouterProvider) {
@@ -46,7 +47,7 @@ trigaApp.config(function($stateProvider, $urlRouterProvider) {
 	    	url: "/notifications",
 	    	views: {
 	    		'menuContent' :{
-	    			templateUrl: "views/notifications.html",
+	    			templateUrl: "views/notificationsWeb.html",
 	    			controller: "NotificationsCtrl"
 	    		}
 	    	}
@@ -89,13 +90,12 @@ trigaApp.config(function($stateProvider, $urlRouterProvider) {
 trigaApp.constant('$ionicLoadingConfig', {template: '<svg class="spinner-container" style="width:65px;height:65px;" viewBox="0 0 44 44" data-reactid=".0.1.0"><circle class="path" cx="22" cy="22" r="20" fill="none" stroke-width="4" data-reactid=".0.1.0.0"></circle></svg>', noBackdrop: true});
 trigaApp.config(function($ionicConfigProvider) {
 //	  $ionicConfigProvider.views.maxCache(0);
+	ionic.Platform.isFullScreen = true;
 });
 var isProd;
 trigaApp.run(function($ionicSideMenuDelegate,PushNotificationService, $location,$timeout,$rootScope) {
 	isProd = true;
-	FastClick.attach(document.body);
 	ionic.Platform.ready(function(){
-//		document.body.style.height = screen.availHeight + 'px';
 		var isUserAllReadyLogged= window.localStorage.getItem("studentPerfil") != null;
 		var waitForPushPluginInitialize = false;
 		
@@ -107,9 +107,18 @@ trigaApp.run(function($ionicSideMenuDelegate,PushNotificationService, $location,
 		}
 		
 		///this plugin lock the orientation for all screens to only portrait |º|
-		if(ionic.Platform.isWebView())
+		if(ionic.Platform.isWebView()){
 			screen.lockOrientation('portrait');
-		
+			if (window.cordova && window.cordova.plugins.Keyboard) {
+			    //Lets hide the accessory bar fo the keyboard (ios)
+			    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
+			    // also, lets disable the native overflow scroll
+			    cordova.plugins.Keyboard.disableScroll(true);
+			  }
+			 statusbarTransparent.enable();
+		     // Get the bar back
+		     StatusBar.show();
+		}
 		//
 		$timeout(function(){
 			var startType;
@@ -125,8 +134,8 @@ trigaApp.run(function($ionicSideMenuDelegate,PushNotificationService, $location,
 					$location.path("/menu/notifications");
 					break;
 				case "defaultPage":
-					$location.path("/menu/" + JSON.parse(window.localStorage.getItem("appConfig")).defaultPage);
-//					$location.path("/menu/quadroDeHorarios");
+					// $location.path("/menu/" + JSON.parse(window.localStorage.getItem("appConfig")).defaultPage);
+					$location.path("/menu/notifications");
 					break;
 				case "firstTime": 
 					$location.path("/login");

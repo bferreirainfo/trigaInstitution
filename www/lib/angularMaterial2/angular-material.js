@@ -10857,12 +10857,13 @@ function MdAutocompleteCtrl ($scope, $element, $mdUtil, $mdConstant, $timeout, $
   self.registerSelectedItemWatcher    = registerSelectedItemWatcher;
   self.unregisterSelectedItemWatcher  = unregisterSelectedItemWatcher;
 
-  self.listEnter = function () { noBlur = true; };
+  self.listEnter = function () { noBlur = true; console.log("enter"); };
   self.listLeave = function () {
     noBlur = false;
+    console.log("leave");
     if (!hasFocus) self.hidden = true;
   };
-  self.mouseUp   = function () { elements.input.focus(); };
+  self.mouseUp   = function () {console.log("mouseup") ; elements.input.focus(); };
 
   return init();
 

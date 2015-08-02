@@ -1,48 +1,90 @@
-<ion-view title="Notificações">
-  <ion-nav-back-button>
-  	<i class="ion-arrow-left-c" class="button-clear"></i>
-  </ion-nav-back-button>
-  <ion-nav-buttons side="right" > 
-		<button id="notificationPopover" ng-click="openPopover($event)"  class="notificationPopover button  button-icon button-clear noPM" ng-controller="UnsawNotficiationsPopoverCtrl" >
-			<span ng-style="{color : unsawNotficiationsSize > 0 ? 'rgba(0, 0, 0, 0.79)' : 'rgba(0, 0, 0, 0.79)'}" class="ion-android-globe" style="font-size: 34px;position: relative;left: -12px;">
-				<span ng-if="unsawNotficiationsSize > 0"  class="badge badge-assertive" style="left: 16px;top: -2px;font-size: 12px;position: absolute;">{{unsawNotficiationsSize}}</span>
-			</span>
-		</button>
-	</ion-nav-buttons>
-	<md-button class="md-fab" style="position: absolute;  left: 78%;  top: 85%;  background: rgb(52, 127, 127)" ng-click="showAlert($event)">
-           		<div class="circle ion-ios-trash" style="font-size: 34px;box-shadow:none;width: 55px;height: 55px; position: relative; left: -5px;top:1px; color: rgba(0, 0, 0, 0.79);"></div>
-    </md-button>
-  <ion-content has-bouncing="true"  >
+<ion-view title="Monitorar notificações">
+	<ion-header-bar  id="subHeader1" class="noPM subHeaderAnimationCondition " no-tap-scroll="true" style="height:64px !important;transform: translate3d(0em,0em,0em);" >
+	</ion-header-bar>
+  <ion-content style="top: 65px;" class="noPM">
+  		<md-content class="chipsdemoContactChips shadowed" layout="column">
+  			<div class="row " >
+  				<div class="col">
+		  		<md-input-container>
+		          <label><h3 class="md-title" style="margin-bottom:0px;padding-left:10px;padding-top:10px;">Perfil</h3></label>
+		          <input ng-model="user.firstName">
+		        </md-input-container>
+  				</div>
+		        <div class="card col noPM" style="height: 200px !important; overflow: auto !important; z-index: 200;">
+					<md-list-item class="md-2-line" ng-repeat="(index, contact) in allContacts"
+				          ng-class="{'selected': !(contacts.indexOf(contact) < 0)}" ng-click="add(contact)" >
+				        <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+				        <div class="md-list-item-text compact">
+				          <h3>{{contact.name}}</h3>
+				          <p>{{contact.email}}</p>
+				        </div>
+				      </md-list-item>
+		        </div>
+  			</div>
+		    <md-contact-chips
+		        ng-model="contacts"
+		        md-contacts="querySearch($query)"
+		        md-contact-name="name"
+		        md-contact-image="image"
+		        md-require-match
+		        filter-selected="filterSelected"
+		        placeholder="Selecione um perfil para filtar.">
+		    </md-contact-chips>
+		    <md-list class="fixedRows">
+		      <md-subheader class="md-no-sticky">Perfis</md-subheader>
+		      <md-list-item class="md-2-line contact-item" ng-repeat="(index, contact) in allContacts"
+		          ng-class="{'selected': !(contacts.indexOf(contact) < 0)}" ng-click="add(contact)" >
+		        <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+		        <div class="md-list-item-text compact">
+		          <h3>{{contact.name}}</h3>
+		          <p>{{contact.email}}</p>
+		        </div>
+		      </md-list-item>
+		    </md-list>
+		    <h3 class="md-title" style="margin-bottom:0px;padding-left:10px;">Nome:</h3>
+		    <md-contact-chips
+		        ng-model="names"
+		        md-contacts="searchNotifications($query)"
+		        md-contact-name="autor"
+		        md-contact-image="image"
+		        md-contact-email="email"
+		        md-require-match
+		        filter-selected="filterSelected"
+		        placeholder="Digite um nome para filtrar">
+		    </md-contact-chips>
+		  </md-content>
 	    <div id="notificationList" class="list">
-	    	<div ng-if="storedNotifications == null" style="margin-top: 40%;margin-bottom: 20%;text-align: center;">
-				<div class="ion-android-globe" style="font-size: 100px;"></div>
-				<div style="font-size: 24px;">Nenhuma notificação!</div>
-			</div>
-    		<div style="margin-top:11px">
-	    		<md-content>
-	    			<md-list>
-		    			<md-subheader ng-if="storedNotifications.length > 0" class="boldCondensed" style="font-size: 16px;  background: rgba(0, 0, 0, 0.18);width: 100%;right:0px;">{{storedNotifications.length}} Notificações</md-subheader>
-					    <md-list-item class="md-3-line" ng-repeat="notification in storedNotifications track by $index">
-		           			<img ng-if="notification.notificaitonType == 'TRIGA'"  class="md-avatar"  ng-src="img/triga3.jpg"></img>
-		           			<img ng-if="notification.notificaitonType == 'INSTITUTION'" class="md-avatar"  ng-src="{{institutionIcon}}"></img>
-		           			<div ng-if="notification.notificaitonType == 'GRADE_NOTIFICATION'" class="md-avatar"  
-		           				style="background: rgb(232, 232, 232);"><i class="icon ion-university" style="font-size:25px;position: relative;top: 7px;left: 10px;"></i>
-		           			</div>
-					        <div class="md-list-item-text" style="padding: 10px 0">
-                              <h3 class="row noPM" style="width: 100%;" >
-                              		<div class="boldCondensed" style="width: 85%;line-height: initial;">
-                              			{{notification.title}}
-                              		</div>
-                              		<div class="boldCondensed" style="color: rgb(56, 151, 231);line-height: initial;width: 50px;text-align: right;">{{notification.date}}</div>
-                          	  </h3>
-					          <h4 style="line-height: initial;">{{notification.message}}</h4>
-					         
-					        </div>
-					        <md-divider></md-divider>
-					      </md-list-item>
-			   	 	</md-list>
-			  </md-content>
-   		 </div>
+			<div   layout="column" flex layout-fill>
+			    	<div ng-if="filtereNotifications.length == 0" style="margin-top: 10%;margin-bottom: 20%;text-align: center;">
+						<div class="ion-android-globe" style="font-size: 100px;"></div>
+						<div style="font-size: 24px;">Nenhuma notificação!</div>
+					</div>
+			      <md-list>
+			      
+			        <md-list-item class="md-3-line" ng-model="filtereNotifications" ng-repeat="notification in filtereNotifications track by $index" >
+			            <img ng-if="notification.notificaitonType == 'TRIGA'"  class="md-avatar"  ng-src="img/triga3.jpg"></img>
+	           			<img ng-if="notification.notificaitonType == 'INSTITUTION'" class="md-avatar"  ng-src="{{institutionIcon}}"></img>
+	           			<div ng-if="notification.notificaitonType == 'GRADE_NOTIFICATION'" class="md-avatar"  
+	           				><i class="icon ion-university" style="font-size:30px;position: relative;top: 0px;left: 10px;"></i>
+	           			</div>
+			            <div class="md-list-item-text">
+			              <h3 class="row noPM" style="width: 100%;" >
+	                          <div class="upperCaseFirstLetter" style="width: 85%;line-height: initial;">
+	                          			{{notification.autor}}
+	                          </div>
+	                          <div class="boldCondensed" style="line-height: initial;width: 100px;text-align: right;">{{formatDate(notification.date)}}</div>
+                          </h3>
+                           <h3 class="row noPM" style="width: 100%;" >
+                           		<div class="upperCaseFirstLetter" style="line-height: initial;">
+                           			{{notification.title}}
+                           		</div>
+                       	   </h3>
+				          <h4 class="upperCaseFirstLetter" style="line-height: initial;margin: 0px;color: rgba(0, 0, 0, 0.65);">{{notification.message}}</h4>
+				        <md-divider ></md-divider>
+				        </div>
+			        </md-list-item>
+			      </md-list>
+	      	</div>
    		</div>
   </ion-content>
 </ion-view>

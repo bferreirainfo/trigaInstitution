@@ -42,6 +42,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
     };
     
     $scope.sendMessage = function (ev) {
+    	var studentPerfil = JSON.parse(window.localStorage.getItem("studentPerfil"));
     	var data = {institutionName : JSON.parse(window.localStorage.getItem("appConfig")).instituionName, 
     				filter: $scope.dto.selectedFilter.value, 
     				classesIds: $scope.dto.selectedClasses, 
@@ -49,7 +50,8 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
     				coursesIds: $scope.dto.selectedCourses,
     				channels: $scope.dto.channels,
     				title: $scope.dto.title,
-    				message: $scope.dto.message};
+    				message: $scope.dto.message,
+    				autor: studentPerfil.name};
     	$mdDialog.show(
 			      $mdDialog.alert()
 			        .title('Enviando mensagem.')
@@ -278,11 +280,11 @@ trigaApp.controller('LoginCtrl', function($scope, $state, $mdDialog,$mdToast, $t
 	 $scope.username = null; 
 	 $scope.password = null;	 
 	 $scope.selectedInstitution = null;
-	 $scope.institutions = [{value: "TRIGA" , name :"TRIGA(TESTE)"}, {value: "ALQUIMIA", name:"ALQUIMIA "}];
+	 $scope.institutions = [{value: "TRIGA" , name :"Triga"}, {value: "ALQUIMIA", name:"Alquimia "}];
 	 if(!isProd){			 
   		$scope.username = "diretor@triga.com";
   		$scope.password = "123";
-  		$scope.selectedInstitution = {value: "TRIGA" , name :"TRIGA(TESTE)"};
+  		$scope.selectedInstitution = {value: "TRIGA" , name :"Triga"};
 	  }
 		
 	  $scope.show = false;
@@ -342,7 +344,7 @@ trigaApp.controller('LoginCtrl', function($scope, $state, $mdDialog,$mdToast, $t
 									        .content('Email ou senha incorretos')
 									        .position("bottom right")
 									        .hideDelay(1000));
-							  },400)
+							  },400);
 						  }
 					  }, function error(resp){
 						  $mdDialog.hide();
@@ -354,137 +356,8 @@ trigaApp.controller('LoginCtrl', function($scope, $state, $mdDialog,$mdToast, $t
 							    );
 					});
 	  };
-})
-trigaApp.controller('loadingDataCtrl', function($scope, $state, $timeout, LoginService) {
-	if(ionic.Platform.isWebView() &&  false == window.localStorage.getItem("testDone")){
-		  $timeout(function(){
-			  var testInitialConditions = "iniciando \nregiGCM " + window.localStorage.getItem("regiGCM") + "\ndeviceId " + window.localStorage.getItem("deviceId");
-			  $scope.regiGCM = JSON.parse(window.localStorage.getItem("regiGCM"));
-			  if($scope.regiGCM == null || !$scope.regiGCM.pass){
-				  $scope.testResult = JSON.parse($scope.regiGCM);
-			  }else{
-				  $timeout(function(){
-					  $scope.deviceId = JSON.parse(window.localStorage.getItem("deviceId"));
-					  if($scope.deviceId == null || !$scope.deviceId.pass){
-						  $scope.testResult = JSON.parse($scope.deviceId);
-					  }else{
-						  $timeout(function(){
-							  if(window.localStorage.getItem("unsawNotficiations")){
-								  $scope.testResult = { pass : true , content : null};
-								  window.localStorage.setItem("testDone", true);
-						  	      $state.go('menu.notas');
-							  }else{
-								  window.localStorage.setItem("testDone", true);
-								  $scope.testResult = { pass : false , content : "notification not received" };
-							  }
-						  },2000);
-					  }
-				  },100);
-			  }
-		  },1000);
-	  }else{
-		  $state.go('menu.notas');
-	  }
-})
-
-
-trigaApp.controller('TeacherReviewCtrl', function ($scope,$ionicSideMenuDelegate) {
-	 $scope.data = {
-	    group1 : '',
-	    group2 : '2'
-	  };
-	  $scope.radioData = [
-	    { label: '1', value: '1' },
-	    { label: '2', value: '2' },
-	    { label: '3', value: '3', isDisabled: true },
-	    { label: '4', value: '4' }
-	  ];
-	  $scope.addItem = function() {
-	    var r = Math.ceil(Math.random() * 1000);
-	    $scope.radioData.push({ label: r, value: r });
-	  };
-	  $scope.removeItem = function() {
-	    $scope.radioData.pop();
-	  };
-})
-trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $mdDialog, $timeout) {
-	$scope.showAlert = function(ev) {
-	    // Appending dialog to document.body to cover sidenav in docs app
-	    // Modal dialogs should fully cover application
-	    // to prevent interaction outside of dialog
-	    $mdDialog.show(
-	    		
-	      $mdDialog.confirm()
-	        .title('Deseja deletar todas as notificações?')
-	        .content('Todas as notificações serão removidas para todo o sempre e não pode ser desfeito.')
-	        .ariaLabel('Alert Dialog Demo')
-	        .ok('Deletar!')
-	        .cancel('Deixa pra lá!')
-	        .targetEvent(ev)
-	    ).then(function() {
-	    	window.localStorage.removeItem("storedNotifications");
-	    	$timeout(function(){
-	    		var notificationListElement = document.getElementById("notificationList");
-   			 if(null != notificationListElement){
-   				 var storedNotificationsScope = angular.element(notificationListElement).scope();
-   					 storedNotificationsScope.$apply(function(){
-   						 storedNotificationsScope.storedNotifications = null;
-   					 });
-   			 }
-			},0)
-	    }, function() {
-	    	//
-	    });;
-	  };
-	$scope.$on( "$ionicView.enter", function( scopes, states) {
-		var fileDir = ionic.Platform.isWebView() ? cordova.file.dataDirectory : "img/";
-		var fileName = ionic.Platform.isWebView() ? 'institution_small_icon.png': "triga3.jpg"
-		var targetPath = fileDir + fileName;
-		$scope.institutionIcon = targetPath;
-		if( states.stateName == "menu.notifications" ) {
-			$rootScope.sideMenuController.canDragContent(true);
-			window.localStorage.removeItem("unsawNotficiations");
-			$timeout(function(){
-			var storedNotifications = JSON.parse(window.localStorage.getItem("storedNotifications"));
-			if(!ionic.Platform.isWebView())
-			storedNotifications = [{ title : 'seja bem vindo ao triga', message: 'Se você recebeu essa mensagem significa que seu dispositivo está pronto para receber notificações da instituição.', date: '10/3', notificaitonType: 'TRIGA'},
-			                              { title : 'Não haverá aula', message: 'Não haverá aula hoje', date: '10/3', notificaitonType: 'INSTITUTION'},
-			                              { title : 'seja bem vindo ao triga', message: '', date: '10/3', notificaitonType:'GRADE_NOTIFICATION'}]
-			var notificationListElement = document.getElementById("notificationList");
-  			 if(null != notificationListElement){
-  				 var storedNotificationsScope = angular.element(notificationListElement).scope();
-  					 storedNotificationsScope.$apply(function(){
-  						 storedNotificationsScope.storedNotifications = storedNotifications;
-  					 });
-  			 }
-			
-			},0)
-			
-		};
-	});
-})
-
-trigaApp.controller('UnsawNotficiationsPopoverCtrl', function($scope, $ionicPopover, $timeout) {
-	$timeout(function(){
-		$scope.unsawNotficiations = JSON.parse(window.localStorage.getItem("unsawNotficiations")) || [];
-		$scope.unsawNotficiationsSize =  $scope.unsawNotficiations.length;
-	},1000)
-	
-	$scope.dto = {top: ionic.Platform.isWebView() ? '35px' : '0px'};
-	$ionicPopover.fromTemplateUrl('views/popover.html',{scope:$scope}).then(function(popover) {
-		$scope.popover = popover;
-  });
-	$scope.closePopover = function() {
-		    $scope.popover.hide();
-	};
-	
-	$scope.openPopover = function($event){
-		$scope.popover.show($event)
-		$scope.unsawNotficiationsSize = 0;
-		window.localStorage.removeItem("unsawNotficiations");
-	}
-})
-
+});
+
 trigaApp.controller('UserCtrl', function($scope, UserPerfilService) {
 	var studentPerfil = JSON.parse(window.localStorage.getItem("studentPerfil"));
 	if(studentPerfil){
@@ -495,14 +368,14 @@ trigaApp.controller('UserCtrl', function($scope, UserPerfilService) {
 			$scope.name = resp.name;
 			$scope.course = resp.course;
 		});
-	}
-})
+	};
+});
 
 trigaApp.controller('ChooseInstitutionCtrl', function($scope, LoginService) {
 	$scope.choose = function(institutionName){
 		LoginService.setInstitution(institutionName);
-    }
-})
+   };
+});
 
 trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 	var studentPerfil = JSON.parse(window.localStorage.getItem("studentPerfil"));
@@ -525,11 +398,231 @@ trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 		default:
 			break;
 	}
+});
+
+trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $mdDialog, $timeout) {
+	var firstime = true;
+	
+	//initial/end- date 
+	var d = new Date();
+ 	d.setDate(d.getDate()-5);
+	$scope.initialDate = d;
+	$scope.endDate = new Date();
+	
+	//perfil vars
+	$scope.querySearch = querySearch;
+    $scope.allContacts = loadContacts();
+    $scope.contacts = [];
+    $scope.filterSelected = true;
+    $scope.filtereNotifications = [];
+    
+    
+    //names vars
+    $scope.namesFilter = [];
+    $scope.searchNotifications = searchNotifications;
+    
+    //detail notication vars
+    $scope.detailNotification = null;
+    $scope.setDetailNotification = function(notification){
+    	$scope.detailNotification = notification;
+    }
+    $scope.$watchCollection('namesFilter' , function (newValue){
+    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
+    		var isNameFilterOk = false;
+    		var isPerfilOk = false;
+    		
+    		//validating filter
+    		if($scope.contacts.length == 0){
+    			isPerfilOk = true;
+    		}else{
+    			var perfil = angular.lowercase(notification.perfil);
+    			for (var i=0; i < $scope.contacts.length; i++) {
+	    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
+	    				isPerfilOk = true;
+	    				break;
+	    			}	
+				};
+    		}
+    		//Validating name
+    		if($scope.namesFilter.length == 0){
+    			isNameFilterOk = true;
+    		}else{
+    			var autor = angular.lowercase(notification.autor);
+	    		for (var i=0; i < $scope.namesFilter.length; i++) {
+	    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
+	    				isNameFilterOk = true;
+	    				break;
+	    			}	
+				};
+    		}
+    		
+			return isPerfilOk && isNameFilterOk;
+    	});
+	});
+    
+    $scope.add = function(contact){
+		if(($scope.contacts.indexOf(contact) < 0))
+			$scope.contacts.push(contact);
+	}
+	function searchNotifications (query) {
+	  var lowercaseQuery = angular.lowercase(query);
+      return $scope.filtereNotifications.filter(function(notification){
+      		var autor = angular.lowercase(notification.autor);
+      		return autor.indexOf(lowercaseQuery) != -1
+      });
+    }
+	function querySearch (query) {
+      var results = query ?
+          $scope.allContacts.filter(createFilterFor(query)) : [];
+      return results;
+    }
+	
+	function createFilterFor(query) {
+      var lowercaseQuery = angular.lowercase(query);
+      return function filterFn(contact) {
+        return (contact._lowername.indexOf(lowercaseQuery) != -1);;
+      };
+    }
+    
+    function loadContacts() {
+      $scope.contacts = [
+        'Coordenador',
+        'Professor',
+        'Diretor',
+        'Reitor',
+      ];
+      return $scope.contacts.map(function (c, index) {
+        var cParts = c.split(' ');
+        var contact = {
+          name: c,
+          email: Math.floor((Math.random() * 10) + 1) + " pessoas",
+          image: 'img/triga3.jpg'
+        };
+        contact._lowername = contact.name.toLowerCase();
+        return contact;
+      });
+    };
+    
+    
+    
+    
+    
+    $scope.$watchCollection('contacts' , function (newValue){
+    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
+    		var isNameFilterOk = false;
+    		var isPerfilOk = false;
+    		
+    		//validating filter
+    		if($scope.contacts.length == 0){
+    			isPerfilOk = true;
+    		}else{
+    			var perfil = angular.lowercase(notification.perfil);
+    			for (var i=0; i < $scope.contacts.length; i++) {
+	    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
+	    				isPerfilOk = true;
+	    				break;
+	    			}	
+				};
+    		}
+    		//Validating name
+    		if($scope.namesFilter.length == 0){
+    			isNameFilterOk = true;
+    		}else{
+    			var autor = angular.lowercase(notification.autor);
+	    		for (var i=0; i < $scope.namesFilter.length; i++) {
+	    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
+	    				isNameFilterOk = true;
+	    				break;
+	    			}	
+				};
+    		}
+    		
+			return isPerfilOk && isNameFilterOk;
+    	});
+	 });
+	 
+    $scope.$watchCollection('notifications' , function (el){
+    	if(el.length > 0){
+	    	// $scope.filtereNotifications = $scope.notifications.filter(function(newValue){
+	    		// console.log(el, newValue)
+	    		// return el.perfil.toLowerCase() == newValue[0].name.toLowerCase();
+	    	// });
+	    	// console.log("Filtered  ", $scope.filtereNotifications);
+		}
+	 });
+    
+	$scope.formatDate = function(time){
+		var notificationDate = new Date();
+		notificationDate.setTime(time);
+		var todayDate = new Date();
+		var isTodayDate = (todayDate.toDateString() === notificationDate.toDateString());
+		if(isTodayDate){
+			return  zeroFill(notificationDate.getHours(),2) + ':' + zeroFill(notificationDate.getMinutes(),2);
+		}else{
+			return zeroFill(notificationDate.getDate(),2) + '/' + zeroFill((notificationDate.getMonth() + 1),2)  + '/' +  notificationDate.getFullYear();
+		};
+	};
+	$scope.$on( "$ionicView.beforeEnter", function( scopes, states) {
+		if( states.stateName == "menu.notifications" ) {
+			// $('.appHeader').addClass("shadowed");
+			var fileDir =  "img/";
+			var fileName =  "triga3.jpg";
+			var targetPath = fileDir + fileName;
+			$scope.institutionIcon = targetPath;
+			//if(!ionic.Platform.isWebView())
+			$scope.notifications = [{ filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'seja bem vindo ao triga', perfil:"coordenador",  autor: 'coo1', message: 'Se você recebeu essa mensagem significa que seu dispositivo está pronto para receber notificações da instituição.', date: new Date().getTime(), notificaitonType: 'TRIGA'},
+		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"coordenador",  autor: 'coo2r', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              {filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"coordenador",  autor: 'coo3', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof1', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof2', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              {filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof3', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"professor",  autor: 'Prof4', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof5', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              {filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir1', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir2', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              { filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir3', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir4', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"reitor",  autor: 'Rei', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+		                              ]
+		};
+	});
 })
+
+
+
+
 
 function isNotEmpty(obj){
 	for(var key in obj) {
 		  if(obj.hasOwnProperty(key)) return true
 	}
 	return false;
+}
+
+function zeroFill( number, width )
+{
+  width -= number.toString().length;
+  if ( width > 0 )
+  {
+    return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
+  }
+  return number + ""; // always return a string
+}
+
+MdChipsCtrl.prototype.removeChipAndFocusInput = function (index) {
+  this.removeChip(index);
+  if(!isMobile){
+	this.onFocus();
+  }
+};
+
+function isMobile(){
+  var isIPad = ionic.Platform.isIPad();
+  var isIOS = ionic.Platform.isIOS();
+  var isAndroid = ionic.Platform.isAndroid();
+  var isWindowsPhone = ionic.Platform.isWindowsPhone();
+  return isIPad || isIOS || isAndroid || isWindowsPhone;
 }
