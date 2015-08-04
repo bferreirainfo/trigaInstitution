@@ -400,7 +400,20 @@ trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 	}
 });
 
-trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $mdDialog, $timeout) {
+trigaApp.controller('DetailNotificationCtrl', function($rootScope,$scope, $state, $mdDialog, $stateParams) {
+	$scope.detailNotification = $stateParams.detailNotification;
+	$scope.getAsHour = function(time){
+		var notificationDate = new Date();
+		notificationDate.setTime(time);
+		return zeroFill(notificationDate.getHours(),2) + ':' + zeroFill(notificationDate.getMinutes(),2);
+	}
+	$scope.getAsDate = function(time){
+		var notificationDate = new Date();
+		notificationDate.setTime(time);
+		return zeroFill(notificationDate.getDate(),2) + '/' + zeroFill((notificationDate.getMonth() + 1),2)  + '/' +  notificationDate.getFullYear();
+	}
+})
+trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $mdDialog, $timeout) {
 	var firstime = true;
 	
 	//initial/end- date 
@@ -425,7 +438,49 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $mdDialog, 
     $scope.detailNotification = null;
     $scope.setDetailNotification = function(notification){
     	$scope.detailNotification = notification;
+    	if(isMobile()){
+    		console.log("notification", notification)
+    		$timeout(function(){
+    			$state.go('menu.detailNotification', {detailNotification: notification});
+    		},250)
+    	}
     }
+    
+    
+    $scope.$watchCollection('contacts' , function (newValue){
+    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
+    		var isNameFilterOk = false;
+    		var isPerfilOk = false;
+    		
+    		//validating filter
+    		if($scope.contacts.length == 0){
+    			isPerfilOk = true;
+    		}else{
+    			var perfil = angular.lowercase(notification.perfil);
+    			for (var i=0; i < $scope.contacts.length; i++) {
+	    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
+	    				isPerfilOk = true;
+	    				break;
+	    			}	
+				};
+    		}
+    		//Validating name
+    		if($scope.namesFilter.length == 0){
+    			isNameFilterOk = true;
+    		}else{
+    			var autor = angular.lowercase(notification.autor);
+	    		for (var i=0; i < $scope.namesFilter.length; i++) {
+	    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
+	    				isNameFilterOk = true;
+	    				break;
+	    			}	
+				};
+    		}
+    		
+			return isPerfilOk && isNameFilterOk;
+    	});
+	 });
+    
     $scope.$watchCollection('namesFilter' , function (newValue){
     	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
     		var isNameFilterOk = false;
@@ -464,6 +519,7 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $mdDialog, 
 		if(($scope.contacts.indexOf(contact) < 0))
 			$scope.contacts.push(contact);
 	}
+    
 	function searchNotifications (query) {
 	  var lowercaseQuery = angular.lowercase(query);
       return $scope.filtereNotifications.filter(function(notification){
@@ -471,6 +527,7 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $mdDialog, 
       		return autor.indexOf(lowercaseQuery) != -1
       });
     }
+	
 	function querySearch (query) {
       var results = query ?
           $scope.allContacts.filter(createFilterFor(query)) : [];
@@ -491,6 +548,7 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $mdDialog, 
         'Diretor',
         'Reitor',
       ];
+      
       return $scope.contacts.map(function (c, index) {
         var cParts = c.split(' ');
         var contact = {
@@ -502,54 +560,6 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $mdDialog, 
         return contact;
       });
     };
-    
-    
-    
-    
-    
-    $scope.$watchCollection('contacts' , function (newValue){
-    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
-    		var isNameFilterOk = false;
-    		var isPerfilOk = false;
-    		
-    		//validating filter
-    		if($scope.contacts.length == 0){
-    			isPerfilOk = true;
-    		}else{
-    			var perfil = angular.lowercase(notification.perfil);
-    			for (var i=0; i < $scope.contacts.length; i++) {
-	    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
-	    				isPerfilOk = true;
-	    				break;
-	    			}	
-				};
-    		}
-    		//Validating name
-    		if($scope.namesFilter.length == 0){
-    			isNameFilterOk = true;
-    		}else{
-    			var autor = angular.lowercase(notification.autor);
-	    		for (var i=0; i < $scope.namesFilter.length; i++) {
-	    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
-	    				isNameFilterOk = true;
-	    				break;
-	    			}	
-				};
-    		}
-    		
-			return isPerfilOk && isNameFilterOk;
-    	});
-	 });
-	 
-    $scope.$watchCollection('notifications' , function (el){
-    	if(el.length > 0){
-	    	// $scope.filtereNotifications = $scope.notifications.filter(function(newValue){
-	    		// console.log(el, newValue)
-	    		// return el.perfil.toLowerCase() == newValue[0].name.toLowerCase();
-	    	// });
-	    	// console.log("Filtered  ", $scope.filtereNotifications);
-		}
-	 });
     
 	$scope.getAsHour = function(time){
 		var notificationDate = new Date();
@@ -575,7 +585,12 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $mdDialog, 
 	};
 	$scope.$on( "$ionicView.beforeEnter", function( scopes, states) {
 		if( states.stateName == "menu.notifications" ) {
-			// $('.appHeader').addClass("shadowed");
+			$scope.isMobile = isMobile();
+			if(isMobile()){
+				$('.appHeader').addClass("shadowed");
+			}else{
+				$('.appHeader').removeClass("shadowed");
+			}
 			var fileDir =  "img/";
 			var fileName =  "triga3.jpg";
 			var targetPath = fileDir + fileName;
@@ -623,12 +638,6 @@ function zeroFill( number, width )
   return number + ""; // always return a string
 }
 
-MdChipsCtrl.prototype.removeChipAndFocusInput = function (index) {
-  this.removeChip(index);
-  if(!isMobile){
-	this.onFocus();
-  }
-};
 
 function isMobile(){
   var isIPad = ionic.Platform.isIPad();
@@ -637,3 +646,10 @@ function isMobile(){
   var isWindowsPhone = ionic.Platform.isWindowsPhone();
   return isIPad || isIOS || isAndroid || isWindowsPhone;
 }
+
+MdChipsCtrl.prototype.removeChipAndFocusInput = function (index) {
+	  this.removeChip(index);
+	  if(!isMobile){
+		this.onFocus();
+	  }
+};

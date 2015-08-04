@@ -1,7 +1,4 @@
-<ion-view title="Monitorar notificações">
-	<ion-header-bar  id="subHeader1" class="noPM subHeaderAnimationCondition " no-tap-scroll="true" style="height:64px !important;transform: translate3d(0em,0em,0em);" >
-	</ion-header-bar>
-  <ion-content style="top: 64px;" class="noPM">
+  <ion-content class="noPM">
 		<ion-scroll style="width: 40%;float:left;height: 100%;">
 			<md-toolbar style="background: #EEEEEE;" class="shadowed">
 			    <div class="md-toolbar-tools">
@@ -92,7 +89,7 @@
 					<div style="font-size: 24px;">Nenhuma notificação!</div>
 				</div>
 		        <md-list class="noPM">
-		        	<md-list-item ng-class="{ 'selected' : notification == detailNotification}" class="md-3-line noPM" ng-model="filtereNotifications" style="height:75px;" ng-repeat="notification in filtereNotifications track by $index" ng-click="setDetailNotification(notification)">
+		        	<md-list-item ng-class="{ 'selected' : notification == detailNotification}" class="md-3-line noPM" ng-model="filtereNotifications" style="height:75px;" ng-repeat="notification in filtereNotifications track by $index"  ng-click="setDetailNotification(notification)">
 			            <img ng-if="notification.notificaitonType == 'TRIGA'"  class="md-avatar"  ng-src="img/triga3.jpg"></img>
 	           			<img ng-if="notification.notificaitonType == 'INSTITUTION'" class="md-avatar"  ng-src="{{institutionIcon}}"></img>
 	           			<div ng-if="notification.notificaitonType == 'GRADE_NOTIFICATION'" class="md-avatar">
@@ -203,4 +200,3 @@
 			
 		 </ion-scroll>
   </ion-content>
-</ion-view>

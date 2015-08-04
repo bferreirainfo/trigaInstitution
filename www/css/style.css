@@ -40,12 +40,9 @@ html,body {
 	padding-left: 13px !important;
 }
 .title{
-	position: initial !important;
 	font-weight: bolder;
 	font-family: Roboto !important;
-	font-size: 20px !important;
 	padding: 6px;
-	padding-left: 14px;
 }
 .redBackground{
 	background: red;
@@ -630,5 +627,5 @@ md-input-container.md-default-theme:not(.md-input-invalid).md-input-has-value la
 	position: relative;  
 	top: -2px;font-weight: 400;    
 	line-height: 1.42857;    
-	left: -49px;	
+	left: -12.6%;;	
 }

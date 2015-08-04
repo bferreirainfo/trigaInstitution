@@ -153,6 +153,18 @@ trigaApp.service('UserPerfilService', function($q,$resource) {
 	}
 })
 
+//trigaApp.service('DetailNotificationService', function($q,$resource) {
+//	return {
+//		getPerfil: function(studentId) {
+//			var resource = $resource(apiUrl+':action?studentId='+studentId+'&instituicao=alquimia',{ action: "perfil"}, { 'get':  {method: 'GET'} });
+//			var q = $q.defer();
+//			fecthData(q,resource, 'get');
+//			return q.promise;
+//		}
+//	
+//	}
+//})
+
 trigaApp.service('LoginService', function($q,$resource) {
 	return {
 		login: function(username, password,institutionName) {
