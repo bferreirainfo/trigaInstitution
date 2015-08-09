@@ -1,4 +1,4 @@
-  <ion-content class="noPM">
+  <ion-content class="noPM" style="top: 64px;">
 		<ion-scroll style="width: 40%;float:left;height: 100%;">
 			<md-toolbar style="background: #EEEEEE;" class="shadowed">
 			    <div class="md-toolbar-tools">
@@ -7,7 +7,7 @@
 			      </h3>
 			    </div>
 			  </md-toolbar>
-			<md-content class="chipsdemoContactChips" style="box-shadow: 0 1px rgb(224,224,224);">
+			<md-content class="chipsdemoContactChips" style="box-shadow: 0 1px rgb(224,224,224);overflow: hidden;">
 	  			<div class="row noPM" style="box-shadow: 0 1px rgb(224,224,224);height: 74px;">
 	  				<div style="padding-top: 10px;margin-right: 10px;">
 						<h3 class="md-title" style="margin-bottom:0px;padding-left:10px;padding-top:10px;">Período:</h3>
@@ -31,7 +31,7 @@
 					</div>
 					<div style="width: 100%;">
 						<div class="row" style="width: 100%;">
-							<div style="width: 100%;height: 74px;">
+							<div style="width: 100%;min-height: 74px;">
 							    <md-contact-chips
 							        ng-model="contacts"
 							        md-contacts="querySearch($query)"

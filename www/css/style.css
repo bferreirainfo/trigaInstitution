@@ -1,4 +1,18 @@
+/* IOS */
+.platform-ios{
+    padding-top: 25px;
+    /*StatusBar color*/
+    background-color: rgb(8, 89, 89);
+}
 
+/* ANDROID */
+.platform-android {
+    padding-top: 25px;
+    /*StatusBar color*/
+    background-color: rgb(8, 89, 89);
+}
+
+/* BODY */
 html,body {
   height: 100%;
   margin: 0 !important;
@@ -7,8 +21,10 @@ html,body {
   font-family: Roboto,sans-serif !important;
   font-stretch: condensed !important;
   transform: translate3d(0em,0em,0em);
+  text-rendering: optimizeLegibility !important;
 }
 
+/* SIDEMENU */
 .fade-bar {
   height: 20px;
   width: 100%;
@@ -18,6 +34,7 @@ html,body {
   background-color: #000;
 }
 
+/* RANDOMS */
 
 .colunaHorario{
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
@@ -26,24 +43,8 @@ html,body {
 	border-radius: 2px;
 	padding: 3px;
 }
-.appHeader{
-	font-size: 18px;
-	height:64px !important;
-	border: none !important;
-	background-image: none !important;
-	padding-top: 12px !important;
-}
-.shadowed{
-	box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
-}
-.bar-header{
-	padding-left: 13px !important;
-}
-.title{
-	font-weight: bolder;
-	font-family: Roboto !important;
-	padding: 6px;
-}
+
+/* GRADE VIEW */
 .redBackground{
 	background: red;
 }
@@ -63,16 +64,9 @@ html,body {
 	color: orange;
 }
 .circle {
-  display: block;
-  width: 55px;
-  height: 55px;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  -webkit-border-radius: 99em;
-  -moz-border-radius: 99em;
-  border-radius: 130em;
-  /* box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);   */
+ border-radius: 50%;
+ width: 20px;
+ height: 20px;
 }
 .pace {
   -webkit-box-sizing: border-box;
@@ -146,14 +140,7 @@ html,body {
 	white-space: nowrap;
 }
 .centralized{
-	display: block; margin: 0 auto !important;
-}
-.smallBakIcon{
-		background-color:white;
-		color:white;
-		height:28px;
-		width:82px;
-		background-image: url("/img/poliBackIcon.png");
+	display: block; margin: 0 auto;
 }
 
 .noPM{
@@ -170,6 +157,7 @@ html,body {
 
 .scroll{
 	height: 100%;
+	width: 100%;
 }
 
 .color-red{
@@ -249,12 +237,6 @@ html,body {
 	color: rgb(15, 71, 66) !important;
 }
 
-.title{
-	/* 	Faculdade  Funeso */
-	/* color:#fff; */
-	/* 	Triga */
-	color: rgb(255, 195, 8);
-}
 
 .alquimiaLogo{
 	width: 150px;
@@ -270,9 +252,7 @@ html,body {
 .universoLogo{
 	width:320px;height:140px;position:relative;top:-10px;left:-20px;
 }
-.bar .title.title-left{
-	position: relative !important;top: -6px;left: 0 !important;right: 0 !important;
-}
+
 
 .marginaldo{
 	margin:10px !important;
@@ -326,21 +306,11 @@ html,body {
 	font-size: 14px;
 }
 
-
-md-divider.md-default-theme {
-  border-top-color: rgba(0, 0, 0, 0.13);
-}
-
 .item-icon-left .icon, .item-icon-right .icon{
 	font-size: 23px !important;
 }
 
-.bar .button.button-icon .icon:before, .bar .button.button-icon:before, .bar .button.button-icon.icon-left:before, .bar .button.button-icon.icon-right:before {
-	font-size: 33px !important;
-	line-height: 32px !important;
-	color: rgba(0, 0, 0, 0.79);
-	padding: 6px 0px 8px 12px !important;
-}
+
 
 .loginCenter{
 	width: 200px;
@@ -366,15 +336,6 @@ md-divider.md-default-theme {
 	top: 100px !important;
 }
 
-.itemIcon{
-	left: 0px !important;
-}
-.noRadius{
-	border-radius: 0px !important;
-}
-.tabbedItemW{
-	/* width: 33% !important; */
-}
 .itemMenu{
 	border:none !important;
 	text-align:left !important;
@@ -382,21 +343,23 @@ md-divider.md-default-theme {
 	width: 100%;
 	padding: 6px 0px 6px 60px !important;
 	margin: 0px !important;
+	border-radius: 0px !important;
 	color: rgb(250, 211, 91) !important;
 	display: inherit !important;
 	border-bottom: 1px solid rgb(51, 51, 51) !important ;
 }
+.itemIcon{
+	left: 0px !important;
+}
+.noRadius{
+	border-radius: 0px !important;
+}
+.tabbedItemW{
+	 width: 33.3% !important;
+	color: rgba(0,0,0,0.26) !important;
+}
 .itemMenu >.icon{
 	color: white !important;
-}
-.TrigaChips{
-	background: rgb(224,224,224); 
-	border-radius: 16px; 
-	height: 32px;
-	line-height: 32px; 
-	margin: 8px 8px 0 0px; 
-	padding: 0 8px 0 0px;
-	float: left;
 }
 .spinner-android{
   stroke: rgb(255, 195, 8) !important;
@@ -501,21 +464,68 @@ md-divider.md-default-theme {
 .loading-container .loading{
 	background: none !important;
 }
-.buttons-right{
-	top:8px !important;
+
+
+.upperCaseFirstLetter:first-letter {
+    text-transform: uppercase;
 }
 
-/* ionic */
-.platform-android {
-    padding-top: 25px;
-    /*StatusBar color*/
-    background-color: rgb(8, 89, 89);
+.TrigaChips{
+	background: rgb(224,224,224); 
+	border-radius: 16px; 
+	height: 32px;
+	line-height: 32px; 
+	margin: 8px 8px 0 0px; 
+	padding: 0 8px 0 0px;
+	float: left;
 }
-.platform-ios{
-    padding-top: 25px;
-    /*StatusBar color*/
-    background-color: rgb(8, 89, 89);
+/* HEADER */
+
+.shadowed{
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
+.bigShadow{
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.title{
+	position: initial !important;
+	font-weight: bolder;
+	font-family: Roboto !important;
+	font-size: 20px !important;
+	padding: 6px;
+	padding-left: 3px;
+}
+
+.appHeader{
+	font-size: 18px;
+	height:64px !important;
+	border: none !important;
+	background-image: none !important;
+	padding-top: 12px !important;
+}
+
+.title{
+	color: rgb(255, 195, 8);
+}
+
+.bar .button.button-icon .icon:before, .bar .button.button-icon:before, .bar .button.button-icon.icon-left:before, .bar .button.button-icon.icon-right:before {
+	font-size: 33px !important;
+	line-height: 32px !important;
+	color: rgba(0, 0, 0, 0.79);
+	padding: 6px 0px 8px 12px !important;
+}
+.bar .button.back-button {
+  color: rgb(2, 21, 21);
+}
+
+.buttons-right{
+	top:14px !important;
+}
+.bar .title.title-left{
+	position: relative !important;top: -6px;left: 3px !important;right: 0 !important;
+}
+
 .scroll-content{
 	padding-top: 0px !important; 
 }

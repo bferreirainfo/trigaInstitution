@@ -249,7 +249,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 						 
 						 
 						 $("#subHeader1").animate({
-					            'top': '64px',
+					            'top': '63px',
 					            }, {duration: 'slow', queue: false}).fadeIn(1200);
 						 if(!firstime){
 							 $("#contentAnimation").show();
@@ -586,7 +586,7 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
 	$scope.$on( "$ionicView.beforeEnter", function( scopes, states) {
 		if( states.stateName == "menu.notifications" ) {
 			$scope.isMobile = isMobile();
-			if(isMobile()){
+			if($scope.isMobile){
 				$('.appHeader').addClass("shadowed");
 			}else{
 				$('.appHeader').removeClass("shadowed");
@@ -617,39 +617,9 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
 	});
 })
 
-
-
-
-
-function isNotEmpty(obj){
-	for(var key in obj) {
-		  if(obj.hasOwnProperty(key)) return true
-	}
-	return false;
-}
-
-function zeroFill( number, width )
-{
-  width -= number.toString().length;
-  if ( width > 0 )
-  {
-    return new Array( width + (/\./.test( number ) ? 2 : 1) ).join( '0' ) + number;
-  }
-  return number + ""; // always return a string
-}
-
-
-function isMobile(){
-  var isIPad = ionic.Platform.isIPad();
-  var isIOS = ionic.Platform.isIOS();
-  var isAndroid = ionic.Platform.isAndroid();
-  var isWindowsPhone = ionic.Platform.isWindowsPhone();
-  return isIPad || isIOS || isAndroid || isWindowsPhone;
-}
-
-MdChipsCtrl.prototype.removeChipAndFocusInput = function (index) {
-	  this.removeChip(index);
-	  if(!isMobile){
-		this.onFocus();
-	  }
-};
+//MdChipsCtrl.prototype.removeChipAndFocusInput = function (index) {
+//	  this.removeChip(index);
+//	  if(!isMobile){
+//		this.onFocus();
+//	  }
+//};

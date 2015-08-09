@@ -1,0 +1,88 @@
+<ion-content style=" top:64px;"class="noPM">
+	<div class="chipsdemoContactChips bigShadow" style="margin-bottom:2px;padding-battom:1px;">	
+		<div class="row noPM" style="box-shadow: 0 1px rgb(224,224,224);height: 70px;">
+			<div style="padding-top: 10px;margin-right: 10px;">
+				<h3 class="md-title" style="margin-bottom:0px;padding-left:10px;padding-top:10px;white-space:nowrap;text-align: left;">Período:</h3>
+			</div>
+			<div>
+				<md-input-container>
+		        	<label style="font-size: 20px">Data inicial</label>
+		        	<input type="date" style="padding:0px;padding-bottom: 5px;" ng-model="initialDate">
+		        </md-input-container>
+			</div>
+			<div>
+			 	<md-input-container>
+	          		<label style="font-size: 20px">Data Final</label>
+	          		<input type="date" style="padding:0px;padding-bottom: 5px;" ng-model="endDate">
+	        </md-input-container>
+			</div>
+		</div>
+		<div class="row noPM" style="width: 100%;">
+			<div style="padding-top: 10px;margin-right: 10px;width: 70px">
+				<h3 class="md-title" style="margin-bottom:0px;padding-left:10px;padding-top:10px;white-space:nowrap;">Perfil:</h3>
+			</div>
+			<div style="width: 100%;">
+			    <div class="row noPM" style="box-shadow: 0 1px rgb(224,224,224);">
+				    <md-list class="fixedRows" style="width: 100%;">
+				      <md-subheader class="md-no-sticky">Selecione um perfil para filtar</md-subheader>
+				      <md-list-item class="md-2-line contact-item" ng-repeat="(index, contact) in allContacts"
+				          ng-class="{'selected': !(contacts.indexOf(contact) < 0)}" ng-click="add(contact)" >
+				        <img ng-src="{{contact.image}}" class="md-avatar" alt="{{contact.name}}" />
+				        <div class="md-list-item-text compact">
+				          <h3>{{contact.name}}</h3>
+				          <p>{{contact.email}}</p>
+				        </div>
+				      </md-list-item>
+				    </md-list>
+	    		</div>
+	    	</div>
+	    </div>
+		<div class="row noPM">
+		   	<div style="padding-top: 14px;margin-right: 10px;width: 70px">
+	    		<h3 class="md-title" style="margin-bottom:0px;padding-left:10px;white-space:nowrap;text-align: left;">Nome:</h3>
+	    	</div>
+	    	<div style="width: 100%;">
+		    	<md-contact-chips
+			        ng-model="namesFilter"
+			        md-contacts="searchNotifications($query)"
+			        md-contact-name="autor"
+			        md-contact-image="image"
+			        md-contact-email="email"
+			        md-require-match
+			        filter-selected="filterSelected"
+			        placeholder="Digite um nome para filtrar">
+		    	</md-contact-chips>
+	    	</div>
+   		</div>
+	</div>
+	<div layout="column" flex layout-fill>
+	   	<div ng-if="filtereNotifications.length == 0" style="margin-top: 10%;margin-bottom: 20%;text-align: center;">
+			<div class="ion-android-globe" style="font-size: 100px;"></div>
+			<div style="font-size: 24px;">Nenhuma notificação!</div>
+		</div>
+	 	<md-list class="noPM">
+	   	 	<md-list-item class="md-3-line" style="transform: translate3d(0em,0em,0em);height:75px" ng-model="filtereNotifications" ng-repeat="notification in filtereNotifications track by $index" ng-click="setDetailNotification(notification)">
+	         	<img ng-if="notification.notificaitonType == 'TRIGA'"  class="md-avatar"  ng-src="img/triga3.jpg"></img>
+	     		<img ng-if="notification.notificaitonType == 'INSTITUTION'" class="md-avatar"  ng-src="{{institutionIcon}}"></img>
+	     		<div ng-if="notification.notificaitonType == 'GRADE_NOTIFICATION'" class="md-avatar">
+	     			<i class="icon ion-university" style="font-size:30px;position: relative;top: 0px;left: 10px;"></i>
+	     		</div>
+	       		<div class="md-list-item-text">
+	        		<h3 class="row noPM" style="width: 100%;" >
+		                <div class="upperCaseFirstLetter" style="width: 85%;line-height: initial;">
+		                   	{{notification.autor}}
+		            	</div>
+	                	<div class="boldCondensed" style="line-height: initial;width: 100px;text-align: right;">{{formatDate(notification.date)}}</div>
+	                </h3>
+	                <h3 class="row noPM" style="width: 100%;" >
+	                    <div class="upperCaseFirstLetter" style="line-height: initial;">
+	               			{{notification.title}}
+	                	</div>
+	               	</h3>
+	      		 	<h4 class="upperCaseFirstLetter ellipsis" style="line-height: initial;margin: 0px;color: rgba(0, 0, 0, 0.65);">{{notification.message}}</h4>
+	   				<md-divider ></md-divider>
+	   		 	</div>
+	   		 </md-list-item>
+	   	 </md-list>
+	</div>
+</ion-content>

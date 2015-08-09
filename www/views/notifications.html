@@ -1,8 +1,7 @@
 <ion-view title="Monitorar notificações">
-	<ion-header-bar  id="subHeader1" class="noPM subHeaderAnimationCondition " no-tap-scroll="true" style="height:64px !important;transform: translate3d(0em,0em,0em);" >
+	<ion-header-bar ng-if="!isMobile" id="subHeader1" class="noPM subHeaderAnimationCondition " no-tap-scroll="true" style="height:64px !important;transform: translate3d(0em,0em,0em);" >
 	</ion-header-bar>
-  <ion-content style="top: 64px;" class="noPM">
   	<div ng-include ng-if="isMobile" src="'views/notificationsMobile.html'"></div>
   	<div ng-include ng-if="!isMobile" src="'views/notificationsWeb.html'"></div>
-  </ion-content>
 </ion-view>
+/
