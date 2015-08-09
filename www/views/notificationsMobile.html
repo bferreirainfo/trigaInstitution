@@ -22,6 +22,15 @@
 				<h3 class="md-title" style="margin-bottom:0px;padding-left:10px;padding-top:10px;white-space:nowrap;">Perfil:</h3>
 			</div>
 			<div style="width: 100%;">
+			    <md-contact-chips
+			        ng-model="contacts"
+			        md-contacts="querySearch($query)"
+			        md-contact-name="name"
+			        md-contact-image="image"
+			        md-require-match
+			        filter-selected="filterSelected"
+			        placeholder="TODOS">
+			    </md-contact-chips>
 			    <div class="row noPM" style="box-shadow: 0 1px rgb(224,224,224);">
 				    <md-list class="fixedRows" style="width: 100%;">
 				      <md-subheader class="md-no-sticky">Selecione um perfil para filtar</md-subheader>
