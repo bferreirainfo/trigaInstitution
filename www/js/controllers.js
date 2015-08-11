@@ -311,7 +311,6 @@ trigaApp.controller('LoginCtrl', function($scope, $state, $mdDialog,$mdToast, $t
 							  if(ionic.Platform.isWebView())
 								  pushNotificationRegister.initialize(PushNotificationService);
 							  $ionicHistory.nextViewOptions({
-								  disableAnimate: true,
 								  disableBack: true
 							  });
 							  
@@ -385,6 +384,7 @@ trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 		$location.path("/login");
 		$window.location.reload();
 	}
+	$scope.isMobile = isMobile();
 	switch (studentPerfil.currenctUserType) {
 		case "Diretor":
 			$scope.showSendMessage =  appConfig.directorFuncionalities.funcionalities.indexOf('SENDMESSAGE') > -1;
@@ -401,6 +401,16 @@ trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 });
 
 trigaApp.controller('DetailNotificationCtrl', function($rootScope,$scope, $state, $mdDialog, $stateParams) {
+	$scope.$on( "$ionicView.afterEnter", function( scopes, states) {
+		if( states.stateName == "menu.detailNotification" ) {
+			$('.appHeader').removeClass("shadowed");
+		}
+	})
+	$scope.$on( "$ionicView.leave", function( scopes, states) {
+		if( states.stateName == "menu.detailNotification" ) {
+			$('.appHeader').addClass("shadowed");
+		}
+	})
 	$scope.detailNotification = $stateParams.detailNotification;
 	$scope.getAsHour = function(time){
 		var notificationDate = new Date();
@@ -413,7 +423,27 @@ trigaApp.controller('DetailNotificationCtrl', function($rootScope,$scope, $state
 		return zeroFill(notificationDate.getDate(),2) + '/' + zeroFill((notificationDate.getMonth() + 1),2)  + '/' +  notificationDate.getFullYear();
 	}
 })
-trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $mdDialog, $timeout) {
+trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $mdDialog, $timeout,$ionicLoading) {
+	
+	$timeout(function(){
+		var x = $("#input-008");
+		x.click(function(){
+			$('ion-content').animate({
+				scrollTop: 385
+			},  0);
+		});
+	},400);
+	
+//	var content = $("ion-content");
+//	content.hide();
+//	$ionicLoading.show();
+//	$timeout(function(){
+//		$ionicLoading.hide();
+//		$timeout(function(){
+//			content.show();
+//		},400)
+//	},300)
+	
 	var firstime = true;
 	
 	//initial/end- date 
@@ -442,7 +472,7 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
     		console.log("notification", notification)
     		$timeout(function(){
     			$state.go('menu.detailNotification', {detailNotification: notification});
-    		},250)
+    		},300)
     	}
     }
     

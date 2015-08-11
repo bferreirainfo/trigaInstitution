@@ -1,6 +1,4 @@
-<ion-view title="Detalhamento de notificação">
-	<ion-header-bar  no-tap-scroll="true" style="height:64px !important;" >
-	</ion-header-bar>
+<ion-view title="{{detailNotification.autor}}">
   	<ion-content style="margin: 20px 0;">
 		 	<div ng-if="detailNotification == undefined" style="background: #F7F7F7;height:100%;">
 		 		<div style="padding-top: 30%;margin-bottom: 20%;text-align: center;">
@@ -9,76 +7,75 @@
 		 		</div>
 			</div>
 			<div ng-if="detailNotification != undefined">
-				<md-content md-theme="docs-dark" layout-padding layout="row" layout-sm="column">
-				    <md-input-container >
-				      <label style="font-size: 18px">Autor</label>
-				      <input style="color:white;" class="upperCaseFirstLetter"disabled="true" ng-model="detailNotification.autor">
-				    </md-input-container>
-				    <md-input-container style="width:100px;">
-				      <label style="font-size: 18px">Perfil</label>
-				      <input style="color:white;" class="upperCaseFirstLetter" ng-model="detailNotification.perfil" disabled="true">
-				    </md-input-container>
+				<md-content class="bigShadow" style="background-color: rgb(11,101,102);padding-left:22px;" layout-padding>
+				   <md-input-container>
+			        <label style="font-size: 22px">Título</label>
+			        <input class="upperCaseFirstLetter ellipsis" style="color:white;font-size: 20px;width:100%" ng-model="detailNotification.title" columns="1" md-maxlength="100" disabled="true"></input>
+		      	</md-input-container>
+				<md-input-container style="width:100%">
+			        <label style="font-size: 22px;">Mensagem</label>
+			        <textarea  style="color:white;font-size: 18px;width:100%" ng-model="detailNotification.message" columns="1" md-maxlength="150" disabled="true"></textarea>
+		      	</md-input-container>
 				</md-content>
-				<md-input-container style="height: 75px;padding: 0 10px">
-			        <label style="font-size: 18px">Título</label>
-			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.title" columns="1" md-maxlength="100" disabled="true"></input>
-		      	</md-input-container>
-				<md-input-container style="padding: 0 10px">
-			        <label style="font-size: 18px;">Mensagem</label>
-			        <textarea /style="color:black;" ng-model="detailNotification.message" columns="1" md-maxlength="150" disabled="true"></textarea>
-		      	</md-input-container>
-		      	<div style="padding: 10px 11px">
-			      	<div class="activeLabel" >Data e Hora</div>
-			      	<div style="padding-top: 10px;">{{getAsDate(detailNotification.date)}} às {{getAsHour(detailNotification.date)}}</div>
+		      	<div style="padding: 0px 24px !important;margin: 0px 0px;-webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.37);">
+			      	<div style="padding: 10px 0px">
+			      		<md-input-container style="width:100%">
+				        <label style="font-size: 22px;">Perfil do autor</label>
+				        <input class="upperCaseFirstLetter ellipsis" style="font-size: 18px;" ng-model="detailNotification.perfil" disabled="true"></input>
+		      			</md-input-container>
+			      		<div class="activeLabel" >Horário de envio</div>
+			      		<div style="padding-top: 10px;padding-left: 3px;font-size: 18px;">{{getAsDate(detailNotification.date)}} às {{getAsHour(detailNotification.date)}}</div>
+			      	</div>
 		      	</div>
-		      	<md-toolbar style="background: #EEEEEE" class="shadowed">
-				    <div class="md-toolbar-tools">
-				      <h3>
-				        <span>Detalhamento do filtro</span>
-				      </h3>
-				    </div>
-			  	</md-toolbar>
-				<md-input-container style="padding: 10px 10px 0px 10px">
-			        <label style="font-size: 18px;">Filtro</label>
-			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.filter.filterName" disabled="true"></input>
-		      	</md-input-container>
-				<md-input-container ng-if="detailNotification.filter.professor" style="padding: 10px 10px 0px 10px">
-			        <label style="font-size: 18px;">Professor</label>
-			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.filter.professor" disabled="true"></input>
-		      	</md-input-container>
-				<div style="padding: 0 11px;">
-			      	<div class="activeLabel">
-			      		{{detailNotification.filter.classes ? 'Turmas' : ''}}
-			      		{{detailNotification.filter.students ? 'Alunos' : ''}}
-			      		{{detailNotification.filter.courses ? 'Cursos' : ''}}
-		      		</div>
-			      	<div class="TrigaChips" ng-repeat="item in detailNotification.filter.classes track by $index">
-			      		<div style="float:left;"> 
-							<img  style="height: 32px;border-radius: 16px;-webkit-user-drag: none;" ng-src="img/triga3.jpg" alt="Coordenador" src="img/triga3.jpg">
-						</div>
-						 <div style="float:left; margin: 0px 8px;">{{item}}</div>
-		      		</div>
-			      	<div class="TrigaChips" ng-repeat="item in detailNotification.filter.students track by $index">
-			      		<div style="float:left;"> 
-							<img  style="height: 32px;border-radius: 16px;-webkit-user-drag: none;" ng-src="img/triga3.jpg" alt="Coordenador" src="img/triga3.jpg">
-						</div>
-						 <div style="float:left; margin: 0px 8px;">{{item}}</div>
-		      		</div>
-			      	<div class="TrigaChips" ng-repeat="item in detailNotification.filter.courses track by $index">
-			      		<div style="float:left;"> 
-							<img  style="height: 32px;border-radius: 16px;-webkit-user-drag: none;" ng-src="img/triga3.jpg" alt="Coordenador" src="img/triga3.jpg">
-						</div>
-						 <div style="float:left; margin: 0px 8px;">{{item}}</div>
-		      		</div>
-		      		<div style="clear: both;padding: 5px 0px;"></div>
-			      	<md-divider ng-if="detailNotification.filter.classes || detailNotification.filter.students || detailNotification.filter.courses"style="border-top-style: dotted !important;padding: 5px 0px;"></md-divider>      		
-		      	</div>		
-		      	<md-input-container style="padding: 0 10px">
-			        <label style="font-size: 18px;">Total de dispositivos impactados</label>
-			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.messageAnalitics.totalTargets" disabled="true"></input>
-		      	</md-input-container>
+			  	<div style="padding: 10px 24px !important;margin: 10px 0px;-webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.37);">
+			  		<md-toolbar style="background-color: white;" >
+					    <div class="md-toolbar-tools noPM">
+					      <h3>
+					        <span>Detalhamento do filtro</span>
+					      </h3>
+					    </div>
+			  		</md-toolbar>
+					<md-input-container>
+				        <label style="font-size: 22px;">Filtro</label>
+				        <input class="upperCaseFirstLetter ellipsis" style="color:black;font-size: 18px;" ng-model="detailNotification.filter.filterName" disabled="true"></input>
+			      	</md-input-container>
+					<md-input-container ng-if="detailNotification.filter.professor">
+				        <label style="font-size: 22px;">Professor</label>
+				        <input class="upperCaseFirstLetter ellipsis" style="color:black;font-size: 18px;" ng-model="detailNotification.filter.professor" disabled="true"></input>
+			      	</md-input-container>
+					<div>
+				      	<div class="activeLabel">
+				      		{{detailNotification.filter.classes ? 'Turmas' : ''}}
+				      		{{detailNotification.filter.students ? 'Alunos' : ''}}
+				      		{{detailNotification.filter.courses ? 'Cursos' : ''}}
+			      		</div>
+				      	<div class="TrigaChips" ng-repeat="item in detailNotification.filter.classes track by $index">
+				      		<div style="float:left;"> 
+								<img  style="height: 32px;border-radius: 16px;-webkit-user-drag: none;" ng-src="img/triga3.jpg" alt="Coordenador" src="img/triga3.jpg">
+							</div>
+							 <div style="float:left; margin: 0px 8px;">{{item}}</div>
+			      		</div>
+				      	<div class="TrigaChips" ng-repeat="item in detailNotification.filter.students track by $index">
+				      		<div style="float:left;"> 
+								<img  style="height: 32px;border-radius: 16px;-webkit-user-drag: none;" ng-src="img/triga3.jpg" alt="Coordenador" src="img/triga3.jpg">
+							</div>
+							 <div style="float:left; margin: 0px 8px;">{{item}}</div>
+			      		</div>
+				      	<div class="TrigaChips" ng-repeat="item in detailNotification.filter.courses track by $index">
+				      		<div style="float:left;"> 
+								<img  style="height: 32px;border-radius: 16px;-webkit-user-drag: none;" ng-src="img/triga3.jpg" alt="Coordenador" src="img/triga3.jpg">
+							</div>
+							 <div style="float:left; margin: 0px 8px;">{{item}}</div>
+			      		</div>
+			      		<div style="clear: both;padding: 5px 0px;"></div>
+				      	<md-divider ng-if="detailNotification.filter.classes || detailNotification.filter.students || detailNotification.filter.courses"style="border-top-style: dotted !important;padding: 5px 0px;"></md-divider>      		
+			      	</div>		
+			      	<md-input-container style="padding: 0 10px">
+				        <label style="font-size: 22px;">Total de dispositivos impactados</label>
+				        <input class="upperCaseFirstLetter ellipsis" style="color:black;font-size: 18px;" ng-model="detailNotification.messageAnalitics.totalTargets" disabled="true"></input>
+			      	</md-input-container>
 		      	</div>
 			</div>
-			</br>
+			<br/>
   </ion-content>
 </ion-view>

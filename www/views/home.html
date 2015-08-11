@@ -7,7 +7,7 @@
 			<ion-nav-back-button>
             </ion-nav-back-button>
 			<ion-nav-buttons side="left">
-            	<button class="button button-icon button-clear ion-navicon" menu-toggle="left"></button>
+            	<button class="button button-icon button-clear ion-navicon ShowMobile" menu-toggle="left" ng-controller="MenuCtrl"></button>
             </ion-nav-buttons>
 		</ion-nav-bar>
 		<!-- APP CONTENT -->
@@ -45,7 +45,7 @@
  					<div class="padding" style="font-weight: bolder;background: rgba(15, 78, 79, 1);color:rgb(185, 194, 194)">Sobre</div>
 				</div>
 				
-				<md-button menu-close href="#/menu/EnviarMensagem"  class="item item-icon-left boldCondensed itemMenu">
+				<md-button menu-close class="item item-icon-left boldCondensed itemMenu">
 					<i class="icon"><img class="circle" src="img/triga3.jpg" style="width:30px;height:30px !important;"> </img></i>
 					Plataforma Triga v0.1
 				</md-button>

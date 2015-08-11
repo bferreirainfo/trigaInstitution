@@ -91,10 +91,21 @@ trigaApp.config(function($stateProvider, $urlRouterProvider) {
 trigaApp.constant('$ionicLoadingConfig', {template: '<svg class="spinner-container" style="width:65px;height:65px;" viewBox="0 0 44 44" data-reactid=".0.1.0"><circle class="path" cx="22" cy="22" r="20" fill="none" stroke-width="4" data-reactid=".0.1.0.0"></circle></svg>', noBackdrop: true});
 trigaApp.config(function($ionicConfigProvider) {
 	ionic.Platform.isFullScreen = true;
-	if(isNative())
-	$ionicConfigProvider.scrolling.jsScrolling(false)
+	if(isNative()){
+		$ionicConfigProvider.scrolling.jsScrolling(false);
+//		ionic.keyboard.enable();
+		
+	}
 });
 var isProd;
+//window.addEventListener('native.keyboardshow', function (e) {
+//    var deviceHeight = window.innerHeight;
+//    var keyboardHeight = e.keyboardHeight;
+//    var deviceHeightAdjusted = deviceHeight - keyboardHeight;//device height adjusted
+//    deviceHeightAdjusted = deviceHeightAdjusted < 0 ? (deviceHeightAdjusted * -1) : deviceHeightAdjusted;//only positive number
+//    document.getElementById('page').style.height = deviceHeightAdjusted + 'px';//set page height
+//    document.getElementById('page').setAttribute('keyBoardHeight', keyboardHeight);//save keyboard height
+//});
 trigaApp.run(function($ionicSideMenuDelegate,PushNotificationService, $location,$timeout,$rootScope) {
 	isProd = true;
 	ionic.Platform.ready(function(){
@@ -103,7 +114,7 @@ trigaApp.run(function($ionicSideMenuDelegate,PushNotificationService, $location,
 		var waitForPushPluginInitialize = false;
 		
 		if(ionic.Platform.isWebView() && isUserAllReadyLogged){
-			//initiate pushNotificationService to analize if the app was a "coldStart" openning
+			//initiate pushNotificationService to analize if the app was a "coldStart" opening
 			//coldstart means that app was closed and the user opened it by click on notification in notification  bar.
 			waitForPushPluginInitialize = true;
 			pushNotificationRegister.initialize(PushNotificationService);
@@ -113,10 +124,8 @@ trigaApp.run(function($ionicSideMenuDelegate,PushNotificationService, $location,
 		if(ionic.Platform.isWebView()){
 			screen.lockOrientation('portrait');
 			if (window.cordova && window.cordova.plugins.Keyboard) {
-			    //Lets hide the accessory bar fo the keyboard (ios)
-			    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
-			    // also, lets disable the native overflow scroll
-			    cordova.plugins.Keyboard.disableScroll(true);
+			    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+			    cordova.plugins.Keyboard.disableScroll(false);
 			  }
 			 statusbarTransparent.enable();
 		     // Get the bar back
