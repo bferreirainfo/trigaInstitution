@@ -1,7 +1,6 @@
 'use strict';
 
 trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialog, $scope,InformationService, SendMessageService,  $ionicLoading,$timeout, $ionicSlideBoxDelegate) {
-//	ionic.Platform.showStatusBar(true);
 	var firstime = true;
 	$scope.selectedProfessor = null;
 	$scope.selectedsChairs = null;
@@ -43,7 +42,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
     
     $scope.sendMessage = function (ev) {
     	var studentPerfil = JSON.parse(window.localStorage.getItem("studentPerfil"));
-    	var data = {institutionName : JSON.parse(window.localStorage.getItem("appConfig")).instituionName, 
+    	var data = { 
     				filter: $scope.dto.selectedFilter.value, 
     				classesIds: $scope.dto.selectedClasses, 
     				studentsIds: $scope.dto.selectedStudents,
@@ -72,7 +71,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 								      $mdToast.simple()
 								        .content(resp.errorMessage)
 								        .position("bottom right")
-								        .hideDelay(1000)
+								        .hideDelay(3000)
 								    );
 						}
 					 },500);
@@ -83,7 +82,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 						      $mdToast.simple()
 						        .content(resp.errorMessage.title + "  " + resp.errorMessage.description)
 						        .position("bottom right")
-						        .hideDelay(1000)
+						        .hideDelay(3000)
 						    );
 			})
     	
@@ -384,6 +383,7 @@ trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 		$location.path("/login");
 		$window.location.reload();
 	}
+	
 	$scope.isMobile = isMobile();
 	switch (studentPerfil.currenctUserType) {
 		case "Diretor":
@@ -423,7 +423,7 @@ trigaApp.controller('DetailNotificationCtrl', function($rootScope,$scope, $state
 		return zeroFill(notificationDate.getDate(),2) + '/' + zeroFill((notificationDate.getMonth() + 1),2)  + '/' +  notificationDate.getFullYear();
 	}
 })
-trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $mdDialog, $timeout,$ionicLoading) {
+trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $mdDialog, $timeout,$ionicLoading, MonitorNotificationService) {
 	
 	$timeout(function(){
 		var x = $("#input-008");
@@ -476,74 +476,6 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
     	}
     }
     
-    
-    $scope.$watchCollection('contacts' , function (newValue){
-    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
-    		var isNameFilterOk = false;
-    		var isPerfilOk = false;
-    		
-    		//validating filter
-    		if($scope.contacts.length == 0){
-    			isPerfilOk = true;
-    		}else{
-    			var perfil = angular.lowercase(notification.perfil);
-    			for (var i=0; i < $scope.contacts.length; i++) {
-	    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
-	    				isPerfilOk = true;
-	    				break;
-	    			}	
-				};
-    		}
-    		//Validating name
-    		if($scope.namesFilter.length == 0){
-    			isNameFilterOk = true;
-    		}else{
-    			var autor = angular.lowercase(notification.autor);
-	    		for (var i=0; i < $scope.namesFilter.length; i++) {
-	    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
-	    				isNameFilterOk = true;
-	    				break;
-	    			}	
-				};
-    		}
-    		
-			return isPerfilOk && isNameFilterOk;
-    	});
-	 });
-    
-    $scope.$watchCollection('namesFilter' , function (newValue){
-    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
-    		var isNameFilterOk = false;
-    		var isPerfilOk = false;
-    		
-    		//validating filter
-    		if($scope.contacts.length == 0){
-    			isPerfilOk = true;
-    		}else{
-    			var perfil = angular.lowercase(notification.perfil);
-    			for (var i=0; i < $scope.contacts.length; i++) {
-	    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
-	    				isPerfilOk = true;
-	    				break;
-	    			}	
-				};
-    		}
-    		//Validating name
-    		if($scope.namesFilter.length == 0){
-    			isNameFilterOk = true;
-    		}else{
-    			var autor = angular.lowercase(notification.autor);
-	    		for (var i=0; i < $scope.namesFilter.length; i++) {
-	    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
-	    				isNameFilterOk = true;
-	    				break;
-	    			}	
-				};
-    		}
-    		
-			return isPerfilOk && isNameFilterOk;
-    	});
-	});
     
     $scope.add = function(contact){
 		if(($scope.contacts.indexOf(contact) < 0))
@@ -613,8 +545,105 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
 			return zeroFill(notificationDate.getDate(),2) + '/' + zeroFill((notificationDate.getMonth() + 1),2)  + '/' +  notificationDate.getFullYear();
 		}
 	};
+	
 	$scope.$on( "$ionicView.beforeEnter", function( scopes, states) {
 		if( states.stateName == "menu.notifications" ) {
+			MonitorNotificationService.searchNotifications({initialDate: $scope.initialDate.getTime(), endDate: $scope.endDate.getTime()}).then(function success(resp){
+				if(false)
+				$scope.notifications = [{ filter: { filterName : "Para turmas de um professor", professor: "Marcelo", classes: ["turma1", "turma2","turma2","turma2","turma2","turma2","turma2","turma2",]}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'seja bem vindo ao triga', perfil:"coordenador",  autor: 'coo1', message: 'Se você recebeu essa mensagem significa que seu dispositivo está pronto para receber notificações da instituição.', date: new Date().getTime(), notificaitonType: 'TRIGA'},
+			                              {filter: { filterName : "Para alunos", students: ["aluno1", "aluno2","aluno3"]},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"coordenador",  autor: 'coo2r', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para cursos", courses: ["Administração", "Enfermagem","Direito"]},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"coordenador",  autor: 'coo3', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof1', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof2', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof3', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"professor",  autor: 'Prof4', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof5', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir1', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir2', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              { filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir3', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir4', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"reitor",  autor: 'Rei', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              ]
+			   $scope.notifications = resp.data.response;
+			   console.log(resp);
+				$scope.$watchCollection('contacts' , function (newValue){
+    	if($scope.notifications)
+    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
+    		var isNameFilterOk = false;
+    		var isPerfilOk = false;
+    		
+    		//validating filter
+    		if($scope.contacts.length == 0){
+    			isPerfilOk = true;
+    		}else{
+    			var perfil = angular.lowercase(notification.perfil);
+    			for (var i=0; i < $scope.contacts.length; i++) {
+	    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
+	    				isPerfilOk = true;
+	    				break;
+	    			}	
+				};
+    		}
+    		//Validating name
+    		if($scope.namesFilter.length == 0){
+    			isNameFilterOk = true;
+    		}else{
+    			var autor = angular.lowercase(notification.autor);
+	    		for (var i=0; i < $scope.namesFilter.length; i++) {
+	    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
+	    				isNameFilterOk = true;
+	    				break;
+	    			}	
+				};
+    		}
+    		
+			return isPerfilOk && isNameFilterOk;
+    	});
+	 });
+    
+    $scope.$watchCollection('namesFilter' , function (newValue){
+    	if($scope.notifications)
+    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
+    		var isNameFilterOk = false;
+    		var isPerfilOk = false;
+    		
+    		//validating filter
+    		if($scope.contacts.length == 0){
+    			isPerfilOk = true;
+    		}else{
+    			var perfil = angular.lowercase(notification.perfil);
+    			for (var i=0; i < $scope.contacts.length; i++) {
+	    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
+	    				isPerfilOk = true;
+	    				break;
+	    			}	
+				};
+    		}
+    		//Validating name
+    		if($scope.namesFilter.length == 0){
+    			isNameFilterOk = true;
+    		}else{
+    			var autor = angular.lowercase(notification.autor);
+	    		for (var i=0; i < $scope.namesFilter.length; i++) {
+	    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
+	    				isNameFilterOk = true;
+	    				break;
+	    			}	
+				};
+    		}
+    		
+			return isPerfilOk && isNameFilterOk;
+    	});
+	});
+
+
+			}, function error(resp){
+				console.log("deu merda + ", resp.errorMessage.title + "  " + resp.errorMessage.description)
+				
+			});
 			$scope.isMobile = isMobile();
 			if($scope.isMobile){
 				$('.appHeader').addClass("shadowed");
@@ -626,23 +655,7 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
 			var targetPath = fileDir + fileName;
 			$scope.institutionIcon = targetPath;
 			//if(!ionic.Platform.isWebView())
-			$scope.notifications = [{ filter: { filterName : "Para turmas de um professor", professor: "Marcelo", classes: ["turma1", "turma2","turma2","turma2","turma2","turma2","turma2","turma2",]}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'seja bem vindo ao triga', perfil:"coordenador",  autor: 'coo1', message: 'Se você recebeu essa mensagem significa que seu dispositivo está pronto para receber notificações da instituição.', date: new Date().getTime(), notificaitonType: 'TRIGA'},
-		                              {filter: { filterName : "Para alunos", students: ["aluno1", "aluno2","aluno3"]},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"coordenador",  autor: 'coo2r', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              {filter: { filterName : "Para cursos", courses: ["Administração", "Enfermagem","Direito"]},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"coordenador",  autor: 'coo3', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof1', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof2', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              {filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof3', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"professor",  autor: 'Prof4', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof5', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              {filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir1', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir2', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              { filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir3', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir4', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"reitor",  autor: 'Rei', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-		                              ]
+			
 		};
 	});
 })

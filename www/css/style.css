@@ -629,6 +629,18 @@ md-list.md-default-theme md-list-item button.md-button:not([disabled]):hover{
     text-transform: uppercase !important;
 }
 .activeLabel{
+	font-size: 18px;
+	color: rgba(0,0,0,0.54);
+	transform: translate3d(0, 6px, 0) scale(0.75);
+	-webkit-font-smoothing: antialiased;
+	padding-left: 2px;
+	transition: transform cubic-bezier(0.25, 0.8, 0.25, 1) 0.25s;
+	position: relative;  
+	top: -2px;font-weight: 400;    
+	line-height: 1.42857;    
+	left: -12.7%;	
+}
+.activeLabeMobilel{
 	font-size: 22px;
 	color: rgba(0,0,0,0.54);
 	transform: translate3d(0, 6px, 0) scale(0.75);
@@ -646,5 +658,5 @@ md-list.md-default-theme md-list-item button.md-button:not([disabled]):hover{
 	width: 30px !important;
 }
 md-input-container{
-	padding: 2px 2px 20px !important;
+	padding: 2px 2px 20px;
 }

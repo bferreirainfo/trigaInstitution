@@ -23,7 +23,7 @@
 				        <label style="font-size: 22px;">Perfil do autor</label>
 				        <input class="upperCaseFirstLetter ellipsis" style="font-size: 18px;" ng-model="detailNotification.perfil" disabled="true"></input>
 		      			</md-input-container>
-			      		<div class="activeLabel" >Horário de envio</div>
+			      		<div class="activeLabeMobilel" >Horário de envio</div>
 			      		<div style="padding-top: 10px;padding-left: 3px;font-size: 18px;">{{getAsDate(detailNotification.date)}} às {{getAsHour(detailNotification.date)}}</div>
 			      	</div>
 		      	</div>
@@ -44,7 +44,7 @@
 				        <input class="upperCaseFirstLetter ellipsis" style="color:black;font-size: 18px;" ng-model="detailNotification.filter.professor" disabled="true"></input>
 			      	</md-input-container>
 					<div>
-				      	<div class="activeLabel">
+				      	<div class="activeLabeMobilel">
 				      		{{detailNotification.filter.classes ? 'Turmas' : ''}}
 				      		{{detailNotification.filter.students ? 'Alunos' : ''}}
 				      		{{detailNotification.filter.courses ? 'Cursos' : ''}}
@@ -70,7 +70,7 @@
 			      		<div style="clear: both;padding: 5px 0px;"></div>
 				      	<md-divider ng-if="detailNotification.filter.classes || detailNotification.filter.students || detailNotification.filter.courses"style="border-top-style: dotted !important;padding: 5px 0px;"></md-divider>      		
 			      	</div>		
-			      	<md-input-container style="padding: 0 10px">
+			      	<md-input-container>
 				        <label style="font-size: 22px;">Total de dispositivos impactados</label>
 				        <input class="upperCaseFirstLetter ellipsis" style="color:black;font-size: 18px;" ng-model="detailNotification.messageAnalitics.totalTargets" disabled="true"></input>
 			      	</md-input-container>

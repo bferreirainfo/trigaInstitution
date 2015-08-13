@@ -3,7 +3,7 @@ var devLocalUrl = "http://192.168.25.3:8080/trigaportal/trigaMobile/aluno/"
 var devWebInstitutionUrl = "http://trigaportal-trigaserver.rhcloud.com/trigaMobile/institution/"
 var devLocalInstitutionUrl = "http://192.168.25.3:8080/trigaportal/trigaMobile/institution/"
 var devWebUrl= "http://trigaportal-trigaserver.rhcloud.com/trigaMobile/aluno/"
-var isLocal = false;
+var isLocal = true;
 var apiUrl = isLocal ? devLocalInstitutionUrl : devWebInstitutionUrl;
 var devInstitutionUrl = isLocal ? devLocalInstitutionUrl : devWebInstitutionUrl;
 
@@ -39,7 +39,7 @@ var lastTimeCached = {};
 trigaApp.service('SendMessageService', function($q,$resource) {
     return {
     	send: function(data) {
-    		var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).instituionName;
+    		data.institutionName = JSON.parse(window.localStorage.getItem("appConfig")).instituionName;
     		var regResource = $resource(devInstitutionUrl+ ':action',
 	    								   { action: "sendMessage"}, 
 	    								   { 'post':  {method: 'POST',
@@ -53,6 +53,24 @@ trigaApp.service('SendMessageService', function($q,$resource) {
             return q.promise;
         }	
     }
+})
+trigaApp.service('MonitorNotificationService', function($q,$resource) {
+	return {
+		searchNotifications: function(data) {
+			data.institutionName = JSON.parse(window.localStorage.getItem("appConfig")).instituionName;
+			var regResource = $resource(devInstitutionUrl+ ':action',
+					{ action: "searchNotifications"}, 
+					{ 'post':  {method: 'POST',
+						headers:{'Content-Type' : 'application/json;'}
+					}
+					
+					} 
+			);
+			var q = $q.defer();
+			fecthData(q,regResource, 'post',null, null, data);
+			return q.promise;
+		}	
+	}
 })
 
 trigaApp.service('InformationService', function($q,$resource) {
