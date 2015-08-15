@@ -546,6 +546,7 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
 		}
 	};
 	
+	$scope.institutionIcon = "img/triga3.jpg";
 	$scope.$on( "$ionicView.beforeEnter", function( scopes, states) {
 		if( states.stateName == "menu.notifications" ) {
 			MonitorNotificationService.searchNotifications({initialDate: $scope.initialDate.getTime(), endDate: $scope.endDate.getTime()}).then(function success(resp){
@@ -567,9 +568,8 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
 			                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir4', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
 			                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"reitor",  autor: 'Rei', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
 			                              ]
-			   $scope.notifications = resp.data.response;
-			   console.log(resp);
-				$scope.$watchCollection('contacts' , function (newValue){
+			   $scope.notifications = resp.data;
+			   $scope.$watchCollection('contacts' , function (newValue){
     	if($scope.notifications)
     	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
     		var isNameFilterOk = false;

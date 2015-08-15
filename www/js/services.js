@@ -219,7 +219,7 @@ function fecthData(qDefered,resource,methodName,storageKey, tries,data){
 		var isFirstTime = tries == null;
 		isFirstTime ? tries = 1 : tries++;
 		//this method above tries to fetch the data based on the resource and methodName
-		console.log("data",data)
+		console.log("REQUEST",data)
 		resource[methodName](data,function(resp) {
 	    	removePromiseProperties(resp);
 	    	console.log("RESPONSE " + JSON.stringify(resp));

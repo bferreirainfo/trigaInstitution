@@ -90,9 +90,9 @@
 				</div>
 		        <md-list class="noPM">
 		        	<md-list-item ng-class="{ 'selected' : notification == detailNotification}" class="md-3-line noPM" ng-model="filtereNotifications" style="height:75px;" ng-repeat="notification in filtereNotifications track by $index"  ng-click="setDetailNotification(notification)">
-			            <img ng-if="notification.notificaitonType == 'TRIGA'"  class="md-avatar"  ng-src="img/triga3.jpg"></img>
-	           			<img ng-if="notification.notificaitonType == 'INSTITUTION'" class="md-avatar"  ng-src="{{institutionIcon}}"></img>
-	           			<div ng-if="notification.notificaitonType == 'GRADE_NOTIFICATION'" class="md-avatar">
+			            <img ng-if="notification.notificationType == 'TRIGA'"  class="md-avatar"  ng-src="img/triga3.jpg"></img>
+	           			<img ng-if="notification.notificationType == 'INSTITUTION'" class="md-avatar"  ng-src="{{institutionIcon}}"></img>
+	           			<div ng-if="notification.notificationType == 'GRADE_NOTIFICATION'" class="md-avatar">
 	           				<i class="icon ion-university" style="font-size:30px;position: relative;top: 0px;left: 10px;"></i>
 	           			</div>
 			            <div class="md-list-item-text compact" style="">
@@ -100,7 +100,7 @@
 	                          <div class="upperCaseFirstLetter" style="width: 85%;line-height: initial;">
 	                          			{{notification.autor}}
 	                          </div>
-	                          <div class="boldCondensed" style="line-height: initial;width: 100px;text-align: right;">{{formatDate(notification.sentDate)}}</div>
+	                          <div class="boldCondensed" style="line-height: initial;width: 100px;text-align: right;">{{formatDate(notification.date)}}</div>
                           </h3>
                            <h3 class="row noPM upperCaseFirstLetter" style="width: 100%;line-height: initial;" >
                            			{{notification.title}}
@@ -158,42 +158,42 @@
 			  	</md-toolbar>
 				<md-input-container style="padding: 10px 10px 0px 10px">
 			        <label style="font-size: 18px;">Filtro</label>
-			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.filter.filterName" disabled="true"></input>
+			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.filter" disabled="true"></input>
 		      	</md-input-container>
-				<md-input-container ng-if="detailNotification.filter.professor" style="padding: 10px 10px 0px 10px">
+				<md-input-container ng-if="detailNotification.professor" style="padding: 10px 10px 0px 10px">
 			        <label style="font-size: 18px;">Professor</label>
-			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.filter.professor" disabled="true"></input>
+			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.professor" disabled="true"></input>
 		      	</md-input-container>
 				<div style="padding: 0 11px;">
 			      	<div class="activeLabel">
-			      		{{detailNotification.filter.classes ? 'Turmas' : ''}}
-			      		{{detailNotification.filter.students ? 'Alunos' : ''}}
-			      		{{detailNotification.filter.courses ? 'Cursos' : ''}}
+			      		{{detailNotification.classes ? 'Turmas' : ''}}
+			      		{{detailNotification.students ? 'Alunos' : ''}}
+			      		{{detailNotification.courses ? 'Cursos' : ''}}
 		      		</div>
-			      	<div class="TrigaChips" ng-repeat="item in detailNotification.filter.classes track by $index">
+			      	<div class="TrigaChips" ng-repeat="item in detailNotification.classes track by $index">
 			      		<div style="float:left;"> 
 							<img  style="height: 32px;border-radius: 16px;-webkit-user-drag: none;" ng-src="img/triga3.jpg" alt="Coordenador" src="img/triga3.jpg">
 						</div>
 						 <div style="float:left; margin: 0px 8px;">{{item}}</div>
 		      		</div>
-			      	<div class="TrigaChips" ng-repeat="item in detailNotification.filter.students track by $index">
+			      	<div class="TrigaChips" ng-repeat="item in detailNotification.studants track by $index">
 			      		<div style="float:left;"> 
 							<img  style="height: 32px;border-radius: 16px;-webkit-user-drag: none;" ng-src="img/triga3.jpg" alt="Coordenador" src="img/triga3.jpg">
 						</div>
-						 <div style="float:left; margin: 0px 8px;">{{item}}</div>
+						 <div style="float:left; margin: 0px 8px;">{{item.nome}}</div>
 		      		</div>
-			      	<div class="TrigaChips" ng-repeat="item in detailNotification.filter.courses track by $index">
+			      	<div class="TrigaChips" ng-repeat="item in detailNotification.courses track by $index">
 			      		<div style="float:left;"> 
 							<img  style="height: 32px;border-radius: 16px;-webkit-user-drag: none;" ng-src="img/triga3.jpg" alt="Coordenador" src="img/triga3.jpg">
 						</div>
 						 <div style="float:left; margin: 0px 8px;">{{item}}</div>
 		      		</div>
 		      		<div style="clear: both;padding: 5px 0px;"></div>
-			      	<md-divider ng-if="detailNotification.filter.classes || detailNotification.filter.students || detailNotification.filter.courses"style="border-top-style: dotted !important;padding: 5px 0px;"></md-divider>      		
+			      	<md-divider ng-if="detailNotification.classes || detailNotification.students || detailNotification.courses"style="border-top-style: dotted !important;padding: 5px 0px;"></md-divider>      		
 		      	</div>		
 		      	<md-input-container style="padding: 0 10px">
 			        <label style="font-size: 18px;">Total de dispositivos impactados</label>
-			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.messageAnalitics.totalTargets" disabled="true"></input>
+			        <input class="ellipsis" style="color:black;" ng-model="detailNotification.totalImpactedDevices" disabled="true"></input>
 		      	</md-input-container>
 		      	</div>
 			</div>

@@ -36,7 +36,7 @@
 }
 
 .tabbed-slidebox .tsb-icons button.active {
-    color: rgb(255, 195, 8) !important;
+    color: rgb(255, 203, 0) !important;
     font-size: 3.5em;
 }
 
@@ -81,7 +81,7 @@
 	margin:0px;
 }
 .tabbed-slidebox .tsb-icons .scroll button.active {
-	border-bottom: 4px solid rgb(255, 195, 8) !important;
+	border-bottom: 4px solid rgb(255, 203, 0) !important;
 }
 .notificationIcon{
 	font-size: 34px;
