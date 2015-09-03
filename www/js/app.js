@@ -3,7 +3,7 @@
 var trigaApp = angular.module('trigaApp', ['ionic','ngResource','ngMaterial','tabSlideBox']);
 trigaApp.config(function($mdThemingProvider) {
 	$mdThemingProvider.theme('default').primaryPalette("orange").accentPalette("green");
-	 $mdThemingProvider.theme('docs-dark').primaryPalette('orange').dark();
+	$mdThemingProvider.theme('docs-dark').primaryPalette('orange').dark();
 });
 
 trigaApp.config(function($stateProvider, $urlRouterProvider) {
@@ -25,8 +25,8 @@ trigaApp.config(function($stateProvider, $urlRouterProvider) {
             templateUrl: "views/home.html"
 
         })
-        .state('menu.EnviarMensagem', {
-            url: "/EnviarMensagem",
+        .state('menu.SendMessage', {
+            url: "/SendMessage",
             views: {
                 'menuContent' :{
                     templateUrl: "views/EnviarMensagem.html",

@@ -1,11 +1,12 @@
 'use strict';
 
+var filters = [{name: "Para toda a instituição", value: 1},{ name: "Para turmas de um professor" , value: 2}, {name: "Para alunos" , value: 3 },{ name: "Cursos" , value: 4}];
 trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialog, $scope,InformationService, SendMessageService,  $ionicLoading,$timeout, $ionicSlideBoxDelegate) {
 	var firstime = true;
 	$scope.selectedProfessor = null;
 	$scope.selectedsChairs = null;
 	$scope.isStepOneDisable = true;
-	
+	$scope.testando = JSON.parse(window.localStorage.getItem("appConfig")).languageDictionary;
 	$scope.slide = function(index){
 		$ionicSlideBoxDelegate.slide(index);
 	}
@@ -26,8 +27,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 	}
 	
 	$scope.loadFilters = function() {
-		$scope.dto.filters = [{name: "Para toda a instituição", value: 1},{ name: "Para turmas de um professor" , value: 2}, {name: "Para alunos" , value: 3 },
-		                      { name: "Cursos" , value: 4}];
+		$scope.dto.filters = filters;
 	}
 	
 	$scope.toggle = function (item, list) {
@@ -41,7 +41,6 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
     };
     
     $scope.sendMessage = function (ev) {
-    	var studentPerfil = JSON.parse(window.localStorage.getItem("studentPerfil"));
     	var data = { 
     				filter: $scope.dto.selectedFilter.value, 
     				classesIds: $scope.dto.selectedClasses, 
@@ -49,8 +48,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
     				coursesIds: $scope.dto.selectedCourses,
     				channels: $scope.dto.channels,
     				title: $scope.dto.title,
-    				message: $scope.dto.message,
-    				autor: studentPerfil.name};
+    				message: $scope.dto.message};
     	$mdDialog.show(
 			      $mdDialog.alert()
 			        .title('Enviando mensagem.')
@@ -265,7 +263,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 					},370)
 	}
 	$scope.$on( "$ionicView.beforeEnter", function( scopes, states ) {
-        if(states.stateName == "menu.EnviarMensagem") {
+        if(states.stateName == "menu.SendMessage") {
         	$rootScope.sideMenuController.canDragContent(false);
         	$('.appHeader').removeClass("shadowed");
         	fetch();
@@ -301,7 +299,6 @@ trigaApp.controller('LoginCtrl', function($scope, $state, $mdDialog,$mdToast, $t
 					  function success(resp) {
 						  $mdDialog.hide();
 						  if(isNotEmpty(resp.data)){
-							  console.log("login response: ", resp);
 							  window.localStorage.setItem("appConfig", JSON.stringify(resp.data.appConfig));
 							  window.localStorage.setItem("studentPerfil", JSON.stringify(resp.data.perfil));
 
@@ -358,15 +355,8 @@ trigaApp.controller('LoginCtrl', function($scope, $state, $mdDialog,$mdToast, $t
 
 trigaApp.controller('UserCtrl', function($scope, UserPerfilService) {
 	var studentPerfil = JSON.parse(window.localStorage.getItem("studentPerfil"));
-	if(studentPerfil){
-		$scope.name = studentPerfil.name;
-		$scope.currenctUserType = studentPerfil.currenctUserType;
-	}else{
-		UserPerfilService.getPerfil("124").then(function(resp) {
-			$scope.name = resp.name;
-			$scope.course = resp.course;
-		});
-	};
+	$scope.name = studentPerfil.name;
+	$scope.currenctUserType = studentPerfil.currenctUserType;
 });
 
 trigaApp.controller('ChooseInstitutionCtrl', function($scope, LoginService) {
@@ -385,15 +375,18 @@ trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 	}
 	
 	$scope.isMobile = isMobile();
+	console.log("Student perfil", studentPerfil)
+	console.log("appConfig", appConfig)
 	switch (studentPerfil.currenctUserType) {
-		case "Diretor":
-			$scope.showSendMessage =  appConfig.directorFuncionalities.funcionalities.indexOf('SENDMESSAGE') > -1;
+		case "DIRECTOR":
+			$scope.showSendMessage =  appConfig.directorFuncionalities.funcionalities.indexOf('SEND_MESSAGE') > -1;
+			$scope.showMonitorNotification =  appConfig.directorFuncionalities.funcionalities.indexOf('MONITOR_NOTIFICATION') > -1;
 			break;
-		case "Coordenador":
-			$scope.showSendMessage =  appConfig.coordenatorFuncionalities.funcionalities.indexOf('SENDMESSAGE') > -1;
+		case "COORDENATOR":
+			$scope.showSendMessage =  appConfig.coordenatorFuncionalities.funcionalities.indexOf('SEND_MESSAGE') > -1;
 			break;
-		case "Professor":
-			$scope.showSendMessage =  appConfig.professorFuncionalities.funcionalities.indexOf('SENDMESSAGE') > -1;
+		case "PROFESSOR":
+			$scope.showSendMessage =  appConfig.professorFuncionalities.funcionalities.indexOf('SEND_MESSAGE') > -1;
 			break;
 		default:
 			break;
@@ -401,9 +394,16 @@ trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 });
 
 trigaApp.controller('DetailNotificationCtrl', function($rootScope,$scope, $state, $mdDialog, $stateParams) {
-	$scope.$on( "$ionicView.afterEnter", function( scopes, states) {
+	$scope.$on( "$ionicView.beforeEnter", function( scopes, states) {
 		if( states.stateName == "menu.detailNotification" ) {
 			$('.appHeader').removeClass("shadowed");
+			$scope.detailNotification = $stateParams.detailNotification;
+			$.map(filters, function(filter) {
+				 if(String(filter.value) === String($scope.detailNotification.filter)){
+					 $scope.filterName = filter.name;
+					 return;
+				 }
+			});
 		}
 	})
 	$scope.$on( "$ionicView.leave", function( scopes, states) {
@@ -411,7 +411,8 @@ trigaApp.controller('DetailNotificationCtrl', function($rootScope,$scope, $state
 			$('.appHeader').addClass("shadowed");
 		}
 	})
-	$scope.detailNotification = $stateParams.detailNotification;
+	
+
 	$scope.getAsHour = function(time){
 		var notificationDate = new Date();
 		notificationDate.setTime(time);
@@ -468,14 +469,13 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
     $scope.detailNotification = null;
     $scope.setDetailNotification = function(notification){
     	$scope.detailNotification = notification;
-    	if(isMobile()){
+    	if(!isMobile()){
     		console.log("notification", notification)
     		$timeout(function(){
     			$state.go('menu.detailNotification', {detailNotification: notification});
     		},300)
     	}
     }
-    
     
     $scope.add = function(contact){
 		if(($scope.contacts.indexOf(contact) < 0))
@@ -546,6 +546,8 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
 		}
 	};
 	
+	$scope.cursos ="Cursos";
+	$scope.perfil = "Diretor";
 	$scope.institutionIcon = "img/triga3.jpg";
 	$scope.$on( "$ionicView.beforeEnter", function( scopes, states) {
 		if( states.stateName == "menu.notifications" ) {
@@ -562,11 +564,11 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
 			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
 			                              {filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
 			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg", title : 'Não haverá aula',perfil:"professor",  autor: 'Prof6', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-			                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir1', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-			                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir2', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-			                              { filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir3', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-			                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir4', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
-			                              { filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"reitor",  autor: 'Rei', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir1', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir2', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"},messageAnalitics: {totalTargets: "10"}, image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir3', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"diretor",  autor: 'Dir4', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
+			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"reitor",  autor: 'Rei', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
 			                              ]
 			   $scope.notifications = resp.data;
 			   $scope.$watchCollection('contacts' , function (newValue){

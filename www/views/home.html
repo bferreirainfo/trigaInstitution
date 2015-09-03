@@ -34,11 +34,11 @@
 					Sair
 				</md-button>
 				<div class="padding" style="letter-spacing: 0.07em;;font-weight: bolder;background: rgba(15, 78, 79, 1);color:rgb(185, 194, 194)">Recursos</div>
-				<md-button ng-if="showSendMessage"  menu-close href="#/menu/EnviarMensagem"  class="item item-icon-left boldCondensed itemMenu">
+				<md-button ng-if="showSendMessage"  menu-close href="#/menu/SendMessage"  class="item item-icon-left boldCondensed itemMenu">
 					<i class="icon ion-ios-compose-outline"></i>
 					Enviar mensagem
 				</md-button>
-				<md-button  menu-close href="#/menu/notifications"     class="item item-icon-left boldCondensed itemMenu"><i class="icon ion-android-globe"  ></i>Monitorar notificações</md-button>
+				<md-button  ng-if="showMonitorNotification" menu-close href="#/menu/notifications"     class="item item-icon-left boldCondensed itemMenu"><i class="icon ion-android-globe"  ></i>Monitorar notificações</md-button>
 <!-- 				<md-button ng-if="showNotifications"  menu-close href="#/menu/notifications"     class="item item-icon-left boldCondensed itemMenu"><i class="icon ion-android-globe"  ></i>Notificões</md-button> -->
 <!-- 				<md-button  menu-close href="#/menu/teacherReview"   class="item item-icon-left boldCondensed itemMenu"><i class="icon ion-ios-people" ></i>AvaliaÃ§Ã£o dos professores</md-button> -->
 				<div >

@@ -69,29 +69,27 @@
 			<div class="ion-android-globe" style="font-size: 100px;"></div>
 			<div style="font-size: 24px;">Nenhuma notificação!</div>
 		</div>
-	 	<md-list class="noPM">
-	   	 	<md-list-item class="md-3-line" style="transform: translate3d(0em,0em,0em);height:75px" ng-model="filtereNotifications" ng-repeat="notification in filtereNotifications track by $index" ng-click="setDetailNotification(notification)">
-	         	<img ng-if="notification.notificaitonType == 'TRIGA'"  class="md-avatar"  ng-src="img/triga3.jpg"></img>
-	     		<img ng-if="notification.notificaitonType == 'INSTITUTION'" class="md-avatar"  ng-src="{{institutionIcon}}"></img>
-	     		<div ng-if="notification.notificaitonType == 'GRADE_NOTIFICATION'" class="md-avatar">
-	     			<i class="icon ion-university" style="font-size:30px;position: relative;top: 0px;left: 10px;"></i>
-	     		</div>
-	       		<div class="md-list-item-text">
-	        		<h3 class="row noPM" style="width: 100%;" >
-		                <div class="upperCaseFirstLetter" style="width: 85%;line-height: initial;">
-		                   	{{notification.autor}}
-		            	</div>
-	                	<div class="boldCondensed" style="line-height: initial;width: 100px;text-align: right;">{{formatDate(notification.date)}}</div>
-	                </h3>
-	                <h3 class="row noPM" style="width: 100%;" >
-	                    <div class="upperCaseFirstLetter" style="line-height: initial;">
-	               			{{notification.title}}
-	                	</div>
-	               	</h3>
-	      		 	<h4 class="upperCaseFirstLetter ellipsis" style="line-height: initial;margin: 0px;color: rgba(0, 0, 0, 0.65);">{{notification.message}}</h4>
-	   				<md-divider ></md-divider>
-	   		 	</div>
-	   		 </md-list-item>
-	   	 </md-list>
+	 	 <md-list class="noPM">
+		        	<md-list-item ng-class="{ 'selected' : notification == detailNotification}" class="md-3-line noPM" ng-model="filtereNotifications" style="height:75px;" ng-repeat="notification in filtereNotifications track by $index"  ng-click="setDetailNotification(notification)">
+			            <img ng-if="notification.notificationType == 'TRIGA'"  class="md-avatar"  ng-src="img/triga3.jpg"></img>
+	           			<img ng-if="notification.notificationType == 'INSTITUTION'" class="md-avatar"  ng-src="{{institutionIcon}}"></img>
+	           			<div ng-if="notification.notificationType == 'GRADE_NOTIFICATION'" class="md-avatar">
+	           				<i class="icon ion-university" style="font-size:30px;position: relative;top: 0px;left: 10px;"></i>
+	           			</div>
+			            <div class="md-list-item-text compact" style="">
+			              <h3 class="row noPM" style="width: 100%;" >
+	                          <div class="upperCaseFirstLetter ellipsis" style="width: 85%;line-height: initial;">
+	                          			{{notification.autor}}
+	                          </div>
+	                          <div class="boldCondensed" style="line-height: initial;width: 100px;text-align: right;">{{formatDate(notification.date)}}</div>
+                          </h3>
+                           <h3 class="noPM upperCaseFirstLetter ellipsis" style="width: 100%;line-height: initial;" >
+                           			{{notification.title}}
+                       	   </h3>
+				          <p class="upperCaseFirstLetter ellipsis" style="line-height: initial;margin: 0px;color: rgba(0, 0, 0, 0.65);">{{notification.message}}</p>
+				        <md-divider class="noPM"></md-divider>
+				        </div>
+			      	</md-list-item>
+			      </md-list>
 	</div>
 </ion-content>

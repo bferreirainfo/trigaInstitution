@@ -5,8 +5,7 @@ function isNotEmpty(obj){
 	return false;
 }
 
-function zeroFill( number, width )
-{
+function zeroFill( number, width ){
   width -= number.toString().length;
   if ( width > 0 )
   {
@@ -14,7 +13,6 @@ function zeroFill( number, width )
   }
   return number + ""; // always return a string
 }
-
 
 function isMobile(){
   var isIPad = ionic.Platform.isIPad();

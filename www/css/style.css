@@ -602,6 +602,7 @@ md-list{
       width: 33%; } }
 @media (min-width: 1000px){
 	.ShowMobile{
+		display:none;
 	}  
 }
 .chipsdemoContactChips md-contact-chips {

@@ -40,6 +40,8 @@ trigaApp.service('SendMessageService', function($q,$resource) {
     return {
     	send: function(data) {
     		data.institutionName = JSON.parse(window.localStorage.getItem("appConfig")).instituionName;
+    		data.autor = JSON.parse(window.localStorage.getItem("studentPerfil")).name;
+    		data.userType = JSON.parse(window.localStorage.getItem("studentPerfil")).currenctUserType;
     		var regResource = $resource(devInstitutionUrl+ ':action',
 	    								   { action: "sendMessage"}, 
 	    								   { 'post':  {method: 'POST',
