@@ -30,16 +30,16 @@
            			<div style="display: block;border-bottom: 1px solid rgb(52, 127, 127);padding-bottom: 10px;margin-bottom:20px;">
 			        	<label style="font-size: 18px;" class="boldCondensed">Defina para quem deseja enviar </label>
            			</div>
-           			{{testando}}
             		<div style="width: 100%;">
+            		{{testando}}
             			<div class="row">
             				<div style="width: 90px;">
 				        		<label style="font-size: 16px;">Filtro</label>
 					    	 </div>
 					    	 <div>
 								 <md-select ng-model="dto.selectedFilter" md-on-open="loadFilters()" style="min-width: 200px;">
-								 	<md-select-label>{{ dto.selectedFilter ? dto.selectedFilter.name : 'Escolha um filtro' }}</md-select-label>
-								 	<md-option ng-value="filter" ng-repeat="filter in dto.filters">{{filter.name}}</md-option>
+								 	<md-select-label>{{ dto.selectedFilter ? dto.selectedFilter : 'Escolha um filtro' }}</md-select-label>
+								 	<md-option ng-value="filter" ng-repeat="filter in dto.filters">{{filter}}</md-option>
 							   	 </md-select>
 					    	 </div>
             			</div>

@@ -39,7 +39,7 @@ var lastTimeCached = {};
 trigaApp.service('SendMessageService', function($q,$resource) {
     return {
     	send: function(data) {
-    		data.institutionName = JSON.parse(window.localStorage.getItem("appConfig")).instituionName;
+    		data.institutionName = JSON.parse(window.localStorage.getItem("appConfig")).institutionName;
     		data.autor = JSON.parse(window.localStorage.getItem("studentPerfil")).name;
     		data.userType = JSON.parse(window.localStorage.getItem("studentPerfil")).currenctUserType;
     		var regResource = $resource(devInstitutionUrl+ ':action',
@@ -59,7 +59,7 @@ trigaApp.service('SendMessageService', function($q,$resource) {
 trigaApp.service('MonitorNotificationService', function($q,$resource) {
 	return {
 		searchNotifications: function(data) {
-			data.institutionName = JSON.parse(window.localStorage.getItem("appConfig")).instituionName;
+			data.institutionName = JSON.parse(window.localStorage.getItem("appConfig")).institutionName;
 			var regResource = $resource(devInstitutionUrl+ ':action',
 					{ action: "searchNotifications"}, 
 					{ 'post':  {method: 'POST',
@@ -78,7 +78,7 @@ trigaApp.service('MonitorNotificationService', function($q,$resource) {
 trigaApp.service('InformationService', function($q,$resource) {
 	return {
 		getAllProfessors: function() {
-			var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).instituionName;
+			var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).institutionName;
 			var regResource = $resource(devInstitutionUrl+ ':action?institutionName=:institutionName',
 					{ action: "getAllProfessors", institutionName: institutionName}, 
 					{ 'getAllProfessors':  {method: 'GET'}
@@ -90,7 +90,7 @@ trigaApp.service('InformationService', function($q,$resource) {
 			return q.promise;
 		},	
 		getAllClassesByProfessorId: function(professorId) {
-			var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).instituionName;
+			var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).institutionName;
 			var regResource = $resource(devInstitutionUrl+ ':action?institutionName=:institutionName&professorId=:professorId',
 					{ action: "getAllClassesByProfessorId", institutionName: institutionName, professorId : professorId}, 
 					{ 'getAllClassesByProfessorId':  {method: 'GET'}
@@ -102,7 +102,7 @@ trigaApp.service('InformationService', function($q,$resource) {
 			return q.promise;
 		},
 		getAllStudents: function() {
-			var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).instituionName;
+			var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).institutionName;
 			var regResource = $resource(devInstitutionUrl+ ':action?institutionName=:institutionName',
 					{ action: "getAllStudents", institutionName: institutionName}, 
 					{ 'getAllStudents':  {method: 'GET'}
@@ -114,7 +114,7 @@ trigaApp.service('InformationService', function($q,$resource) {
 			return q.promise;
 		},
 		getAllCourses: function() {
-			var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).instituionName;
+			var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).institutionName;
 			var regResource = $resource(devInstitutionUrl+ ':action?institutionName=:institutionName',
 					{ action: "getAllCourses", institutionName: institutionName}, 
 					{ 'getAllCourses':  {method: 'GET'}
@@ -133,7 +133,7 @@ trigaApp.service('PushNotificationService', function($q,$resource) {
     return {
     	saveDeviceKeyInServer: function(devicePushNotificationKey) {
     		var studentId = JSON.parse(window.localStorage.getItem("studentPerfil")).id;
-    		var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).instituionName;
+    		var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).institutionName;
     		var regResource = $resource(apiUrl+ ':action?studentId=:studentId&institution=:institution&devicePushNotificationKey=:devicePushNotificationKey&deviceUUID=:deviceUUID&deviceModel=:deviceModel&devicePlatform=:devicePlatform&deviceVersion=:deviceVersion',
     								   { action: "saveDeviceKey", studentId: studentId,  institution: institutionName, devicePushNotificationKey : devicePushNotificationKey, deviceUUID : device.uuid, deviceModel : device.model , devicePlatform: device.platform, deviceVersion: device.version }, { 'get':  {method: 'GET', isArray : false} });
             var q = $q.defer();
@@ -292,12 +292,4 @@ function connectionStatus(){
 	 }
 }
 
-function objToString (obj) {
-    var str = '';
-    for (var p in obj) {
-        if (obj.hasOwnProperty(p)) {
-            str += obj[p];
-        }
-    }
-    return str;
-}
+

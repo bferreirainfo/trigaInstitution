@@ -19,7 +19,7 @@ function isMobile(){
   var isIOS = ionic.Platform.isIOS();
   var isAndroid = ionic.Platform.isAndroid();
   var isWindowsPhone = ionic.Platform.isWindowsPhone();
-  return isIPad || isIOS || isAndroid || isWindowsPhone;
+  return (isIPad || isIOS || isAndroid || isWindowsPhone);
 }
 
 function isNative(){
@@ -28,3 +28,25 @@ function isNative(){
 	else
 		return false;
 }
+
+function translate(text){
+	var languageDictionary = getItem("languageDictionary");
+	return languageDictionary[text.toLowerCase()];
+}
+
+
+function getItem(key){
+	return JSON.parse(window.localStorage.getItem(key));
+}
+
+
+function objToString (obj) {
+    var str = '';
+    for (var p in obj) {
+        if (obj.hasOwnProperty(p)) {
+            str += obj[p];
+        }
+    }
+    return str;
+}
+    

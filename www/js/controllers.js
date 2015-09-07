@@ -6,12 +6,12 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 	$scope.selectedProfessor = null;
 	$scope.selectedsChairs = null;
 	$scope.isStepOneDisable = true;
-	$scope.testando = JSON.parse(window.localStorage.getItem("appConfig")).languageDictionary;
 	$scope.slide = function(index){
 		$ionicSlideBoxDelegate.slide(index);
 	}
 	
-	
+	$scope.testando = getItem("appConfig").directorFuncionalities.messageFilters;
+	$scope.testando = getItem("languageDictionary");
 	$scope.loadTeachers = function() {
 		return InformationService.getAllProfessors().then(
 				function success(resp) {
@@ -27,7 +27,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 	}
 	
 	$scope.loadFilters = function() {
-		$scope.dto.filters = filters;
+		$scope.dto.filters = $scope.testando;
 	}
 	
 	$scope.toggle = function (item, list) {
@@ -295,11 +295,13 @@ trigaApp.controller('LoginCtrl', function($scope, $state, $mdDialog,$mdToast, $t
 				        .content('Aguarde um momento...')
 				        .targetEvent(ev)
 				    );
+			console.log("institutionValue: ", selectedInstitution.value)
 			  LoginService.login(username,password,selectedInstitution.value).then(
 					  function success(resp) {
 						  $mdDialog.hide();
 						  if(isNotEmpty(resp.data)){
 							  window.localStorage.setItem("appConfig", JSON.stringify(resp.data.appConfig));
+							  window.localStorage.setItem("languageDictionary", JSON.stringify(resp.data.appConfig.languageDictionary));
 							  window.localStorage.setItem("studentPerfil", JSON.stringify(resp.data.perfil));
 
 							  //
@@ -354,9 +356,10 @@ trigaApp.controller('LoginCtrl', function($scope, $state, $mdDialog,$mdToast, $t
 });
 
 trigaApp.controller('UserCtrl', function($scope, UserPerfilService) {
-	var studentPerfil = JSON.parse(window.localStorage.getItem("studentPerfil"));
+	var studentPerfil = getItem("studentPerfil");
+	var languageDictionary = getItem("languageDictionary");
 	$scope.name = studentPerfil.name;
-	$scope.currenctUserType = studentPerfil.currenctUserType;
+	$scope.currenctUserType = translate(studentPerfil.currenctUserType.toLowerCase());
 });
 
 trigaApp.controller('ChooseInstitutionCtrl', function($scope, LoginService) {
@@ -367,7 +370,7 @@ trigaApp.controller('ChooseInstitutionCtrl', function($scope, LoginService) {
 
 trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 	var studentPerfil = JSON.parse(window.localStorage.getItem("studentPerfil"));
-	var appConfig = JSON.parse(window.localStorage.getItem("appConfig"));
+	var appConfig = getItem("appConfig");
 	$scope.logout = function(){
 		window.localStorage.clear();
 		$location.path("/login");
@@ -375,8 +378,6 @@ trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 	}
 	
 	$scope.isMobile = isMobile();
-	console.log("Student perfil", studentPerfil)
-	console.log("appConfig", appConfig)
 	switch (studentPerfil.currenctUserType) {
 		case "DIRECTOR":
 			$scope.showSendMessage =  appConfig.directorFuncionalities.funcionalities.indexOf('SEND_MESSAGE') > -1;
@@ -398,6 +399,7 @@ trigaApp.controller('DetailNotificationCtrl', function($rootScope,$scope, $state
 		if( states.stateName == "menu.detailNotification" ) {
 			$('.appHeader').removeClass("shadowed");
 			$scope.detailNotification = $stateParams.detailNotification;
+			$scope.perfil = "11";
 			$.map(filters, function(filter) {
 				 if(String(filter.value) === String($scope.detailNotification.filter)){
 					 $scope.filterName = filter.name;
@@ -469,12 +471,14 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
     $scope.detailNotification = null;
     $scope.setDetailNotification = function(notification){
     	$scope.detailNotification = notification;
-    	if(!isMobile()){
-    		console.log("notification", notification)
+    	if(isMobile()){
     		$timeout(function(){
     			$state.go('menu.detailNotification', {detailNotification: notification});
     		},300)
+    	}else{
+    		$scope.perfil = translate(notification.userType);
     	}
+    	
     }
     
     $scope.add = function(contact){
@@ -546,8 +550,6 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
 		}
 	};
 	
-	$scope.cursos ="Cursos";
-	$scope.perfil = "Diretor";
 	$scope.institutionIcon = "img/triga3.jpg";
 	$scope.$on( "$ionicView.beforeEnter", function( scopes, states) {
 		if( states.stateName == "menu.notifications" ) {
@@ -668,3 +670,5 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
 //		this.onFocus();
 //	  }
 //};
+
+

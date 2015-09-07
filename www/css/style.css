@@ -668,3 +668,10 @@ md-list.md-default-theme md-list-item button.md-button:not([disabled]):hover{
 md-input-container{
 	padding: 2px 2px 20px;
 }
+
+/** FOR MOBILE **/
+@media (max-width: 1000px){
+	ion-content{
+		margin-bottom:23px !important;
+	}
+}
