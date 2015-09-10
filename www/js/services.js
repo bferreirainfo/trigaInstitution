@@ -101,6 +101,18 @@ trigaApp.service('InformationService', function($q,$resource) {
 			fecthData(q,regResource, 'get');
 			return q.promise;
 		},
+		getAllStudentsByProfessorId: function(professorId) {
+			var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).institutionName;
+			var regResource = $resource(devInstitutionUrl+ ':action?institutionName=:institutionName&professorId=:professorId',
+					{ action: "getAllStudentsByProfessorId", institutionName: institutionName, professorId : professorId}, 
+					{ 'getAllStudentsByProfessorId':  {method: 'GET'}
+					
+					} 
+			);
+			var q = $q.defer();
+			fecthData(q,regResource, 'get');
+			return q.promise;
+		},
 		getAllStudents: function() {
 			var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).institutionName;
 			var regResource = $resource(devInstitutionUrl+ ':action?institutionName=:institutionName',

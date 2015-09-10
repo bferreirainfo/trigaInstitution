@@ -19,7 +19,7 @@ function isMobile(){
   var isIOS = ionic.Platform.isIOS();
   var isAndroid = ionic.Platform.isAndroid();
   var isWindowsPhone = ionic.Platform.isWindowsPhone();
-  return (isIPad || isIOS || isAndroid || isWindowsPhone);
+  return !(isIPad || isIOS || isAndroid || isWindowsPhone);
 }
 
 function isNative(){
@@ -29,11 +29,38 @@ function isNative(){
 		return false;
 }
 
-function translate(text){
-	var languageDictionary = getItem("languageDictionary");
-	return languageDictionary[text.toLowerCase()];
+function getFunctionalities(){
+	
+	var appConfig = getItem("appConfig");
+	var perfil = getItem("studentPerfil");
+	
+	switch (perfil.currenctUserType) {
+		case "director":
+			return appConfig.directorFuncionalities;
+		case "coordenator":
+			return  appConfig.coordenatorFuncionalities;
+		case "professor":
+			return  appConfig.professorFuncionalities;
+		default:
+			break;
+	}
 }
 
+
+function translate(text){
+	var languageDictionary = getItem("languageDictionary");
+	return languageDictionary[text];
+}
+
+function getLabels(listOfKeys){
+	var labels = [];
+	console.log("listOfKeys: ",listOfKeys)
+	for (var key in listOfKeys) {
+		var item = listOfKeys[key];
+		labels.push({"key": item, value : translate(item)});
+	}
+	return labels;
+}
 
 function getItem(key){
 	return JSON.parse(window.localStorage.getItem(key));

@@ -10,8 +10,11 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 		$ionicSlideBoxDelegate.slide(index);
 	}
 	
-	$scope.testando = getItem("appConfig").directorFuncionalities.messageFilters;
-	$scope.testando = getItem("languageDictionary");
+	$scope.translate = function(text){
+		return translate(text);
+	}
+	
+	
 	$scope.loadTeachers = function() {
 		return InformationService.getAllProfessors().then(
 				function success(resp) {
@@ -27,7 +30,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 	}
 	
 	$scope.loadFilters = function() {
-		$scope.dto.filters = $scope.testando;
+		$scope.dto.filters = getLabels(getFunctionalities().messageFilters);
 	}
 	
 	$scope.toggle = function (item, list) {
@@ -42,7 +45,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
     
     $scope.sendMessage = function (ev) {
     	var data = { 
-    				filter: $scope.dto.selectedFilter.value, 
+    				filter: $scope.dto.selectedFilter.key, 
     				classesIds: $scope.dto.selectedClasses, 
     				studentsIds: $scope.dto.selectedStudents,
     				coursesIds: $scope.dto.selectedCourses,
@@ -122,8 +125,6 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 			 $("#contentAnimation").addClass("contentAnimation");
 		 }
 		 $ionicLoading.show()
-		var studentId = JSON.parse(window.localStorage.getItem("studentPerfil")).id;
-		
 					$timeout(function(){
 						$scope.$broadcast('scroll.refreshComplete');
 						$ionicLoading.hide();
@@ -133,21 +134,39 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 						 $scope.events.trigger("render");
 						 $scope.$watch('dto.selectedFilter' , function (filter){
 							 if(filter){
-								 
-								 switch (filter.value) {
-									case 1:
+								 switch (filter.key) {
+									case "forAllInstitution":
 										$scope.dto.showWhereTab = true;
 										$scope.events.trigger("render");
 										break;
-									case 2:
-										 if($scope.dto.selectedClasses.length > 0){
+									case "forClassesOfProfessor":
+										if($scope.dto.selectedClasses.length > 0){
 											 $scope.dto.showWhereTab = true;
 											 $scope.events.trigger("render");
 										 }else{
 											 $scope.dto.showWhereTab = false;
 										 }
 										break;
-									case 3:
+									case "forMyClasses":
+										 if($scope.dto.selectedClasses.length > 0){
+											 $scope.dto.showWhereTab = true;
+											 $scope.events.trigger("render");
+										 }else{
+											 $scope.dto.showWhereTab = false;
+										 }
+										 var professorId = getItem("studentPerfil").professorId;
+										 InformationService.getAllClassesByProfessorId(professorId).then(function sucess(resp){
+												$scope.dto.classes = resp.data;
+											 }, function error(resp){
+												 $mdToast.show(
+													      $mdToast.simple()
+													        .content(resp.errorMessage.title + "  " + resp.errorMessage.description)
+													        .position("bottom right")
+													        .hideDelay(1000)
+													    );
+										 });
+										break;
+									case "forMyStudents":
 										 if($scope.dto.selectedStudents.length > 0){
 											 $scope.dto.showWhereTab = true;
 											 $scope.events.trigger("render");
@@ -155,7 +174,8 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 											 $scope.dto.showWhereTab = false;
 											 $scope.events.trigger("render");
 										 }
-										InformationService.getAllStudents().then(
+										 var professorId = getItem("studentPerfil").professorId;
+										 InformationService.getAllStudentsByProfessorId(professorId).then(
 												function success(resp) {
 													$scope.dto.students = resp.data;
 												},function error(resp) {
@@ -167,7 +187,27 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 														    );
 												});
 										break;
-									case 4:
+									case "forStudents":
+										 if($scope.dto.selectedStudents.length > 0){
+											 $scope.dto.showWhereTab = true;
+											 $scope.events.trigger("render");
+										 }else{
+											 $scope.dto.showWhereTab = false;
+											 $scope.events.trigger("render");
+										 }
+										 InformationService.getAllStudents().then(
+												function success(resp) {
+													$scope.dto.students = resp.data;
+												},function error(resp) {
+													$mdToast.show(
+														      $mdToast.simple()
+														        .content(resp.errorMessage.title + "  " + resp.errorMessage.description)
+														        .position("bottom right")
+														        .hideDelay(1000)
+														    );
+												});
+										break;
+									case "forCourses":
 										if($scope.dto.selectedCourses.length > 0){
 											 $scope.dto.showWhereTab = true;
 											 $scope.events.trigger("render");
@@ -359,7 +399,7 @@ trigaApp.controller('UserCtrl', function($scope, UserPerfilService) {
 	var studentPerfil = getItem("studentPerfil");
 	var languageDictionary = getItem("languageDictionary");
 	$scope.name = studentPerfil.name;
-	$scope.currenctUserType = translate(studentPerfil.currenctUserType.toLowerCase());
+	$scope.currenctUserType = translate(studentPerfil.currenctUserType);
 });
 
 trigaApp.controller('ChooseInstitutionCtrl', function($scope, LoginService) {
@@ -378,20 +418,8 @@ trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 	}
 	
 	$scope.isMobile = isMobile();
-	switch (studentPerfil.currenctUserType) {
-		case "DIRECTOR":
-			$scope.showSendMessage =  appConfig.directorFuncionalities.funcionalities.indexOf('SEND_MESSAGE') > -1;
-			$scope.showMonitorNotification =  appConfig.directorFuncionalities.funcionalities.indexOf('MONITOR_NOTIFICATION') > -1;
-			break;
-		case "COORDENATOR":
-			$scope.showSendMessage =  appConfig.coordenatorFuncionalities.funcionalities.indexOf('SEND_MESSAGE') > -1;
-			break;
-		case "PROFESSOR":
-			$scope.showSendMessage =  appConfig.professorFuncionalities.funcionalities.indexOf('SEND_MESSAGE') > -1;
-			break;
-		default:
-			break;
-	}
+	$scope.showSendMessage =  getFunctionalities().funcionalities.indexOf('SEND_MESSAGE') > -1;
+	$scope.showMonitorNotification =  getFunctionalities().funcionalities.indexOf('MONITOR_NOTIFICATION') > -1;
 });
 
 trigaApp.controller('DetailNotificationCtrl', function($rootScope,$scope, $state, $mdDialog, $stateParams) {
@@ -399,7 +427,8 @@ trigaApp.controller('DetailNotificationCtrl', function($rootScope,$scope, $state
 		if( states.stateName == "menu.detailNotification" ) {
 			$('.appHeader').removeClass("shadowed");
 			$scope.detailNotification = $stateParams.detailNotification;
-			$scope.perfil = "11";
+			$scope.perfil = translate($scope.detailNotification.userType);
+    		$scope.filter = translate($scope.detailNotification.filter);
 			$.map(filters, function(filter) {
 				 if(String(filter.value) === String($scope.detailNotification.filter)){
 					 $scope.filterName = filter.name;
@@ -476,7 +505,9 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
     			$state.go('menu.detailNotification', {detailNotification: notification});
     		},300)
     	}else{
+    		console.log(notification.filter)
     		$scope.perfil = translate(notification.userType);
+    		$scope.filter = translate(notification.filter);
     	}
     	
     }
@@ -573,75 +604,76 @@ trigaApp.controller('NotificationsCtrl', function($rootScope,$scope, $state, $md
 			                              {filter: { filterName : "Para toda a instituição"}, messageAnalitics: {totalTargets: "10"},image:"img/userWithoutPhoto.jpg",title : 'Não haverá aula',perfil:"reitor",  autor: 'Rei', message: 'Não haverá aula hoje', date: new Date().getTime(), notificaitonType: 'INSTITUTION'},
 			                              ]
 			   $scope.notifications = resp.data;
+			   
 			   $scope.$watchCollection('contacts' , function (newValue){
-    	if($scope.notifications)
-    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
-    		var isNameFilterOk = false;
-    		var isPerfilOk = false;
-    		
-    		//validating filter
-    		if($scope.contacts.length == 0){
-    			isPerfilOk = true;
-    		}else{
-    			var perfil = angular.lowercase(notification.perfil);
-    			for (var i=0; i < $scope.contacts.length; i++) {
-	    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
-	    				isPerfilOk = true;
-	    				break;
-	    			}	
-				};
-    		}
-    		//Validating name
-    		if($scope.namesFilter.length == 0){
-    			isNameFilterOk = true;
-    		}else{
-    			var autor = angular.lowercase(notification.autor);
-	    		for (var i=0; i < $scope.namesFilter.length; i++) {
-	    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
-	    				isNameFilterOk = true;
-	    				break;
-	    			}	
-				};
-    		}
-    		
-			return isPerfilOk && isNameFilterOk;
-    	});
-	 });
-    
-    $scope.$watchCollection('namesFilter' , function (newValue){
-    	if($scope.notifications)
-    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
-    		var isNameFilterOk = false;
-    		var isPerfilOk = false;
-    		
-    		//validating filter
-    		if($scope.contacts.length == 0){
-    			isPerfilOk = true;
-    		}else{
-    			var perfil = angular.lowercase(notification.perfil);
-    			for (var i=0; i < $scope.contacts.length; i++) {
-	    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
-	    				isPerfilOk = true;
-	    				break;
-	    			}	
-				};
-    		}
-    		//Validating name
-    		if($scope.namesFilter.length == 0){
-    			isNameFilterOk = true;
-    		}else{
-    			var autor = angular.lowercase(notification.autor);
-	    		for (var i=0; i < $scope.namesFilter.length; i++) {
-	    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
-	    				isNameFilterOk = true;
-	    				break;
-	    			}	
-				};
-    		}
-    		
-			return isPerfilOk && isNameFilterOk;
-    	});
-	});
+			    	if($scope.notifications){
+				    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
+				    		var isNameFilterOk = false;
+				    		var isPerfilOk = false;
+				    		
+				    		//validating filter
+				    		if($scope.contacts.length == 0){
+				    			isPerfilOk = true;
+				    		}else{
+				    			var perfil = angular.lowercase(notification.perfil);
+				    			for (var i=0; i < $scope.contacts.length; i++) {
+					    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
+					    				isPerfilOk = true;
+					    				break;
+					    			}	
+								};
+				    		}
+				    		//Validating name
+				    		if($scope.namesFilter.length == 0){
+				    			isNameFilterOk = true;
+				    		}else{
+				    			var autor = angular.lowercase(notification.autor);
+					    		for (var i=0; i < $scope.namesFilter.length; i++) {
+					    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
+					    				isNameFilterOk = true;
+					    				break;
+					    			}	
+								};
+				    		}
+				    		
+							return isPerfilOk && isNameFilterOk;
+				    	});
+	    			}
+			   });
+			    $scope.$watchCollection('namesFilter' , function (newValue){
+			    	if($scope.notifications)
+			    	$scope.filtereNotifications = $scope.notifications.filter(function(notification){
+			    		var isNameFilterOk = false;
+			    		var isPerfilOk = false;
+			    		
+			    		//validating filter
+			    		if($scope.contacts.length == 0){
+			    			isPerfilOk = true;
+			    		}else{
+			    			var perfil = angular.lowercase(notification.perfil);
+			    			for (var i=0; i < $scope.contacts.length; i++) {
+				    			if(perfil.indexOf($scope.contacts[i].name.toLowerCase()) != -1){
+				    				isPerfilOk = true;
+				    				break;
+				    			}	
+							};
+			    		}
+			    		//Validating name
+			    		if($scope.namesFilter.length == 0){
+			    			isNameFilterOk = true;
+			    		}else{
+			    			var autor = angular.lowercase(notification.autor);
+				    		for (var i=0; i < $scope.namesFilter.length; i++) {
+				    			if(autor.indexOf($scope.namesFilter[i].autor.toLowerCase()) != -1){
+				    				isNameFilterOk = true;
+				    				break;
+				    			}	
+							};
+			    		}
+			    		
+						return isPerfilOk && isNameFilterOk;
+			    	});
+				});
 
 
 			}, function error(resp){

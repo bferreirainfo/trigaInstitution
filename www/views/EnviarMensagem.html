@@ -24,27 +24,39 @@
 	<!-- CONTENT -->
 	<ion-content style="top:104px;margin-bottom: 30px !important;" >
 		<div class="row noPM">
-        <ion-slide-box   show-pager="false" on-slide-changed="slideHasChanged($index)" style="background: white;width:100%;" ng-style="{'padding-top' : dto.isUpdated == true }">
-            <ion-slide>
-            	<div style="text-align: left;margin-left:20px;padding: 10px 0px;height: 100%;">
-           			<div style="display: block;border-bottom: 1px solid rgb(52, 127, 127);padding-bottom: 10px;margin-bottom:20px;">
-			        	<label style="font-size: 18px;" class="boldCondensed">Defina para quem deseja enviar </label>
-           			</div>
-            		<div style="width: 100%;">
-            		{{testando}}
+        <ion-slide-box show-pager="false" on-slide-changed="slideHasChanged($index)" style="background: white;width:100%;" ng-style="{'padding-top' : dto.isUpdated == true }">
+            <ion-slide class="noPM">
+            	<div style="text-align: left;height: 100%;">
+            		<div style="padding: 0px 20px !important;margin: 10px 0px;box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, 0.37);">
+			  		<md-toolbar style="background-color: white;" >
+					    <div class="md-toolbar-tools noPM">
+					      <h3>
+					        <span>Defina para quem deseja enviar</span>
+					      </h3>
+					    </div>
+			  		</md-toolbar>
             			<div class="row">
             				<div style="width: 90px;">
 				        		<label style="font-size: 16px;">Filtro</label>
 					    	 </div>
 					    	 <div>
 								 <md-select ng-model="dto.selectedFilter" md-on-open="loadFilters()" style="min-width: 200px;">
-								 	<md-select-label>{{ dto.selectedFilter ? dto.selectedFilter : 'Escolha um filtro' }}</md-select-label>
-								 	<md-option ng-value="filter" ng-repeat="filter in dto.filters">{{filter}}</md-option>
+								 	<md-select-label>{{ dto.selectedFilter ? dto.selectedFilter.value : 'Escolha um filtro' }}</md-select-label>
+								 	<md-option ng-value="filter" ng-repeat="filter in dto.filters">{{filter.value}}</md-option>
 							   	 </md-select>
 					    	 </div>
             			</div>
-				        <div ng-if="dto.selectedFilter.value == 2" style="padding-top: 20px;">
-							<div class="row" >
+           			</div>
+				        <div ng-if="dto.selectedFilter.key == 'forMyClasses' || dto.selectedFilter.key == 'forClassesOfProfessor'">
+				        	<div style="padding: 10px 24px !important;margin: 10px 0px;-webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.37);">
+			  		<md-toolbar style="background-color: white;" >
+					    <div class="md-toolbar-tools noPM">
+					      <h3>
+					        <span>Escolha um professor</span>
+					      </h3>
+					    </div>
+			  		</md-toolbar>
+							<div ng-if="dto.selectedFilter.key == 'forClassesOfProfessor'" class="row" >
 			        			<div style="width: 90px;">
 				        			<label style="font-size: 16px;">Professor</label>
 			        			</div>
@@ -54,19 +66,26 @@
 									      <md-option ng-value="teacher" ng-repeat="teacher in dto.teachers">{{teacher.name}}</md-option>
 								   	 </md-select>
 			        			</div>
-							</div>			        
-							<div ng-if="dto.selectedTeacher != null" style="padding-top: 20px;">
-								<div style="display: block;border-bottom: 1px solid rgb(52, 127, 127);padding-bottom: 10px;margin-bottom:20px;">
-			        				<label style="font-size: 18px;" class="boldCondensed">Selecione as turmas</label>
-           						</div>
+							</div>	
+							 </div>
+							<div ng-if="dto.selectedFilter.key == 'forMyClasses' || dto.selectedTeacher != null" >
+								       	<div style="padding: 10px 24px !important;margin: 10px 0px;-webkit-box-shadow: 0px 0px 19px 0px rgba(0, 0, 0, 0.37);">
+			  		<md-toolbar style="background-color: white;" >
+					    <div class="md-toolbar-tools noPM">
+					      <h3>
+					        <span>Selecione as turmas</span>
+					      </h3>
+					    </div>
+			  		</md-toolbar>
             					<div>
 									<md-checkbox class="noPM" style="padding-left:20px !important;max-width: 300px;width:100%; font-size: 16px;" ng-repeat="item in dto.classes" ng-checked="exists(item.id, dto.selectedClasses)" ng-click="toggle(item.id, dto.selectedClasses)">
 							        	{{ item.nome }} 
 							        </md-checkbox>
             					</div>
 							 </div>
+							 </div>
 				        </div>
-				        <div ng-if="dto.selectedFilter.value == 3" style="padding-top: 20px;">
+				        <div ng-if="dto.selectedFilter.key == 'forMyStudents' || dto.selectedFilter.key == 'forStudents'" style="padding-top: 20px;">
 				        	<div style="display: block;border-bottom: 1px solid rgb(52, 127, 127);padding-bottom: 10px;margin-bottom:20px;">
 			        			<label style="font-size: 18px;" class="boldCondensed">Selecione os alunos</label>
            					</div>
@@ -77,7 +96,7 @@
 							 </div>
 				        </div>
 				        
-				        <div ng-if="dto.selectedFilter.value == 4" style="padding-top: 20px;">
+				        <div ng-if="dto.selectedFilter.key == 'forCourses'" style="padding-top: 20px;">
 				        	<div style="display: block;border-bottom: 1px solid rgb(52, 127, 127);padding-bottom: 10px;margin-bottom:20px;">
 			        			<label style="font-size: 18px;" class="boldCondensed">Selecione os cursos</label>
            					</div>
@@ -91,7 +110,6 @@
 							<md-button class="md-raised centralized" ng-disabled="!dto.showWhereTab" ng-click="slide(1)">Próximo passo</md-button>
 				        </div>
             		</div>
-			  	</div>
             </ion-slide>
             <ion-slide ng-if="dto.showWhereTab" class="centralized">
             	<div style="text-align: left;">
