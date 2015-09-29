@@ -3,7 +3,7 @@ var devLocalUrl = "http://192.168.25.3:8080/trigaportal/trigaMobile/aluno/"
 var devWebInstitutionUrl = "http://trigaportal-trigaserver.rhcloud.com/trigaMobile/institution/"
 var devLocalInstitutionUrl = "http://192.168.25.3:8080/trigaportal/trigaMobile/institution/"
 var devWebUrl= "http://trigaportal-trigaserver.rhcloud.com/trigaMobile/aluno/"
-var isLocal = true;
+var isLocal = false;
 var apiUrl = isLocal ? devLocalInstitutionUrl : devWebInstitutionUrl;
 var devInstitutionUrl = isLocal ? devLocalInstitutionUrl : devWebInstitutionUrl;
 
@@ -71,6 +71,18 @@ trigaApp.service('MonitorNotificationService', function($q,$resource) {
 			var q = $q.defer();
 			fecthData(q,regResource, 'post',null, null, data);
 			return q.promise;
+		},
+		getPerfilCount: function() {
+			var institutionName = JSON.parse(window.localStorage.getItem("appConfig")).institutionName;
+			var regResource = $resource(devInstitutionUrl+ ':action?institutionName=:institutionName',
+					{ action: "getPerfilCount", institutionName: institutionName}, 
+					{ 'getPerfilCount':  {method: 'GET'}
+					
+					} 
+			);
+			var q = $q.defer();
+			fecthData(q,regResource, 'get');
+			return q.promise;
 		}	
 	}
 })
@@ -136,7 +148,7 @@ trigaApp.service('InformationService', function($q,$resource) {
 			var q = $q.defer();
 			fecthData(q,regResource, 'get');
 			return q.promise;
-		}	
+		},	
 	}
 })
 

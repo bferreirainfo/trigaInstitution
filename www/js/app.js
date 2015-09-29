@@ -122,7 +122,7 @@ trigaApp.run(function($ionicSideMenuDelegate,PushNotificationService, $location,
 		
 		///this plugin lock the orientation for all screens to only portrait |º|
 		if(ionic.Platform.isWebView()){
-			screen.lockOrientation('portrait');
+//			screen.lockOrientation('portrait');
 			if (window.cordova && window.cordova.plugins.Keyboard) {
 			    cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
 			    cordova.plugins.Keyboard.disableScroll(false);

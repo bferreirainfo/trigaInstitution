@@ -19,7 +19,7 @@ function isMobile(){
   var isIOS = ionic.Platform.isIOS();
   var isAndroid = ionic.Platform.isAndroid();
   var isWindowsPhone = ionic.Platform.isWindowsPhone();
-  return !(isIPad || isIOS || isAndroid || isWindowsPhone);
+  return (isIPad || isIOS || isAndroid || isWindowsPhone);
 }
 
 function isNative(){
