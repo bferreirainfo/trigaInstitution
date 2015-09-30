@@ -3,7 +3,7 @@ var devLocalUrl = "http://192.168.25.3:8080/trigaportal/trigaMobile/aluno/"
 var devWebInstitutionUrl = "http://trigaportal-trigaserver.rhcloud.com/trigaMobile/institution/"
 var devLocalInstitutionUrl = "http://192.168.25.3:8080/trigaportal/trigaMobile/institution/"
 var devWebUrl= "http://trigaportal-trigaserver.rhcloud.com/trigaMobile/aluno/"
-var isLocal = false;
+var isLocal = true;
 var apiUrl = isLocal ? devLocalInstitutionUrl : devWebInstitutionUrl;
 var devInstitutionUrl = isLocal ? devLocalInstitutionUrl : devWebInstitutionUrl;
 

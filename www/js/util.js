@@ -29,6 +29,13 @@ function isNative(){
 		return false;
 }
 
+function getItem(key){
+	return JSON.parse(window.localStorage.getItem(key));
+}
+function save(key,item){
+	return window.localStorage.setItem(key, JSON.stringify(item));
+}
+
 function getFunctionalities(){
 	
 	var appConfig = getItem("appConfig");
@@ -36,11 +43,11 @@ function getFunctionalities(){
 	
 	switch (perfil.currenctUserType) {
 		case "director":
-			return appConfig.directorFuncionalities;
+			return appConfig.directorConfig;
 		case "coordenator":
-			return  appConfig.coordenatorFuncionalities;
+			return  appConfig.coordenatorConfig;
 		case "professor":
-			return  appConfig.professorFuncionalities;
+			return  appConfig.professorConfig;
 		default:
 			break;
 	}

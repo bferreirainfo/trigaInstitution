@@ -13,8 +13,7 @@ trigaApp.controller('EnviarMensagemCtrl', function ($rootScope,$mdToast,$mdDialo
 	$scope.translate = function(text){
 		return translate(text);
 	}
-	
-	
+	 
 	$scope.loadTeachers = function() {
 		return InformationService.getAllProfessors().then(
 				function success(resp) {
@@ -317,11 +316,11 @@ trigaApp.controller('LoginCtrl', function($scope, $state, $mdDialog,$mdToast, $t
 	 $scope.username = null; 
 	 $scope.password = null;	 
 	 $scope.selectedInstitution = null;
-	 $scope.institutions = [{value: "TRIGA" , name :"Triga"}, {value: "ALQUIMIA", name:"Alquimia "}];
+	 $scope.institutions = [{value: "triga" , name :"Triga"}, {value: "ALQUIMIA", name:"Alquimia "}];
 	 if(!isProd){			 
   		$scope.username = "diretor@triga.com";
   		$scope.password = "123";
-  		$scope.selectedInstitution = {value: "TRIGA" , name :"Triga"};
+  		$scope.selectedInstitution = {value: "triga" , name :"Triga"};
 	  }
 		
 	  $scope.show = false;
@@ -418,8 +417,8 @@ trigaApp.controller('MenuCtrl', function($scope, $location,$window) {
 	}
 	
 	$scope.isMobile = isMobile();
-	$scope.showSendMessage =  getFunctionalities().funcionalities.indexOf('SEND_MESSAGE') > -1;
-	$scope.showMonitorNotification =  getFunctionalities().funcionalities.indexOf('MONITOR_NOTIFICATION') > -1;
+	$scope.showSendMessage =  getFunctionalities().funcionalities.indexOf('sendMessage') > -1;
+	$scope.showMonitorNotification =  getFunctionalities().funcionalities.indexOf('monitorNotification') > -1;
 });
 
 trigaApp.controller('DetailNotificationCtrl', function($rootScope,$scope, $state, $mdDialog, $stateParams) {
